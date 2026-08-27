@@ -412,13 +412,18 @@ export default function Home() {
           귀한 걸음 하시어<br />축복해 주시면 감사하겠습니다.
         </p>
         <div className="family-lines">
-          <p><span>최상운 · 최은주</span>의 장남 <strong>지환</strong></p>
-          <p><span>윤숭열 · 이지연</span>의 장녀 <strong>서희</strong></p>
+          <div className="family family-groom"><small>GROOM</small><p><span>최상운 · 최은주</span>의 장남 <strong>지환</strong></p></div>
+          <div className="family family-bride"><small>BRIDE</small><p><span>윤숭열 · 이지연</span>의 장녀 <strong>서희</strong></p></div>
         </div>
       </section>
 
       <section className="section date-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="THE WEDDING DAY">2026년 10월 25일</SectionHeading>
+        <SectionHeading eyebrow="THE WEDDING DAY">우리의 결혼식</SectionHeading>
+        <div className="date-monument" aria-label="2026년 10월 25일 일요일">
+          <span>OCT</span>
+          <strong>25</strong>
+          <div><b>2026</b><i>SUNDAY</i></div>
+        </div>
         <p className="date-summary">일요일 오후 12시 10분 · 수원 마이어스</p>
         <div className="calendar" aria-label="2026년 10월 달력">
           <div className="calendar-title">OCTOBER <span>2026</span></div>
@@ -438,6 +443,7 @@ export default function Home() {
 
       <section className="section gallery-section reveal-section" data-reveal>
         <SectionHeading eyebrow="GALLERY">우리의 순간들</SectionHeading>
+        <p className="gallery-lead">여덟 해 동안 차곡차곡 쌓인<br />지환과 서희의 장면들</p>
         <div className="gallery-frame">
           <div className="gallery-track" ref={galleryRef}>
             {GALLERY.map((src, index) => (
