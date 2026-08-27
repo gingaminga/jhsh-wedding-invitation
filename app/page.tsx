@@ -155,9 +155,17 @@ function IntroPhoto({ src, label, className, onReady }: { src: string; label: st
   );
 }
 
-function GreetingSequence() {
+function GreetingSequence({ onComplete }: { onComplete: () => void }) {
   const [firstReady, setFirstReady] = useState(false);
   const [secondReady, setSecondReady] = useState(false);
+
+  useEffect(() => {
+    if (!firstReady || !secondReady) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(onComplete, reduceMotion ? 0 : 1900);
+    return () => window.clearTimeout(timer);
+  }, [firstReady, onComplete, secondReady]);
+
   return (
     <div className={`couple-intro ${firstReady && secondReady ? "is-ready" : ""}`} aria-label="정면 사진에서 인사 사진으로 이어지는 커플 사진">
       <IntroPhoto src="/images/intro-1.jpg" label="한복을 입고 정면을 바라보는 지환과 서희" className="portrait-one" onReady={() => setFirstReady(true)} />
@@ -168,10 +176,30 @@ function GreetingSequence() {
 
 function GreetingIntro() {
   const [cycle, setCycle] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  const completeGreeting = useCallback(() => setCompleted(true), []);
+
+  useEffect(() => {
+    if (!completed) {
+      const root = document.documentElement;
+      const previousScrollBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = "auto";
+      window.scrollTo(0, 0);
+      root.style.scrollBehavior = previousScrollBehavior;
+    }
+    document.body.classList.toggle("greeting-locked", !completed);
+    return () => document.body.classList.remove("greeting-locked");
+  }, [completed]);
+
+  const replay = () => {
+    setCompleted(false);
+    setCycle((value) => value + 1);
+  };
+
   return (
     <div className="greeting-stage">
-      <GreetingSequence key={cycle} />
-      <button type="button" className="greeting-replay" onClick={() => setCycle((value) => value + 1)} aria-label="첫 화면 인사 사진 다시 보기">↻ 인사 다시 보기</button>
+      <GreetingSequence key={cycle} onComplete={completeGreeting} />
+      <button type="button" className="greeting-replay" onClick={replay} aria-label="첫 화면 인사 사진 다시 보기">↻ 인사 다시 보기</button>
     </div>
   );
 }

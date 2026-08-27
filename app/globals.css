@@ -19,6 +19,7 @@ button, summary, a { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }
 img { display: block; max-width: 100%; }
 .modal-open { overflow: hidden; }
+body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action: none; }
 
 .invitation-shell { width: min(100%, 540px); min-height: 100vh; margin: 0 auto; overflow: hidden; background: var(--paper); box-shadow: 0 0 50px rgb(48 43 37 / 9%); }
 .hero { min-height: 100svh; padding: 28px 14px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; text-align: center; }
