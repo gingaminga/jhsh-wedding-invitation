@@ -162,7 +162,7 @@ function GreetingSequence({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
     if (!firstReady || !secondReady) return;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const timer = window.setTimeout(onComplete, reduceMotion ? 0 : 1650);
+    const timer = window.setTimeout(onComplete, reduceMotion ? 0 : 2300);
     return () => window.clearTimeout(timer);
   }, [firstReady, onComplete, secondReady]);
 
