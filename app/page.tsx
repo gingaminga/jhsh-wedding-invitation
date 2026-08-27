@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const WEDDING_AT = new Date("2026-10-25T12:10:00+09:00");
 const GALLERY = Array.from({ length: 21 }, (_, index) =>
@@ -126,8 +126,22 @@ function KakaoShareButton() {
   return <button type="button" className="kakao-share-button" onClick={share}><span aria-hidden="true">♥</span> 카카오톡으로 청첩장 공유하기</button>;
 }
 
-function IntroPhoto({ src, label, className }: { src: string; label: string; className: string }) {
+function IntroPhoto({ src, label, className, onReady }: { src: string; label: string; className: string; onReady: () => void }) {
   const [loaded, setLoaded] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const readyReported = useRef(false);
+  const markAsReady = useCallback(() => {
+    if (readyReported.current) return;
+    readyReported.current = true;
+    setLoaded(true);
+    onReady();
+  }, [onReady]);
+
+  useEffect(() => {
+    const image = imageRef.current;
+    if (image?.complete && image.naturalWidth > 0) markAsReady();
+  }, [markAsReady]);
+
   return (
     <div className={`portrait ${className}`}>
       {!loaded && (
@@ -136,8 +150,28 @@ function IntroPhoto({ src, label, className }: { src: string; label: string; cla
           <small>{label}</small>
         </div>
       )}
-      {/* 첫 화면 사진 파일은 public/images/intro-1.jpg, intro-2.jpg로 교체됩니다. */}
-      <img src={src} alt={label} onLoad={() => setLoaded(true)} className={loaded ? "is-loaded" : ""} />
+      <img ref={imageRef} src={src} alt={label} onLoad={markAsReady} className={loaded ? "is-loaded" : ""} />
+    </div>
+  );
+}
+
+function GreetingSequence() {
+  const [firstReady, setFirstReady] = useState(false);
+  const [secondReady, setSecondReady] = useState(false);
+  return (
+    <div className={`couple-intro ${firstReady && secondReady ? "is-ready" : ""}`} aria-label="정면 사진에서 인사 사진으로 이어지는 커플 사진">
+      <IntroPhoto src="/images/intro-1.jpg" label="한복을 입고 정면을 바라보는 지환과 서희" className="portrait-one" onReady={() => setFirstReady(true)} />
+      <IntroPhoto src="/images/intro-2.jpg" label="한복을 입고 함께 인사하는 지환과 서희" className="portrait-two" onReady={() => setSecondReady(true)} />
+    </div>
+  );
+}
+
+function GreetingIntro() {
+  const [cycle, setCycle] = useState(0);
+  return (
+    <div className="greeting-stage">
+      <GreetingSequence key={cycle} />
+      <button type="button" className="greeting-replay" onClick={() => setCycle((value) => value + 1)} aria-label="첫 화면 인사 사진 다시 보기">↻ 인사 다시 보기</button>
     </div>
   );
 }
@@ -335,10 +369,7 @@ export default function Home() {
     <main className="invitation-shell">
       <section className="hero" aria-labelledby="hero-title">
         <p className="eyebrow">WE ARE GETTING MARRIED</p>
-        <div className="couple-intro" aria-label="커플 사진이 차례로 나타나는 영역">
-          <IntroPhoto src="/images/intro-1.jpg" label="첫 번째 커플 사진" className="portrait-one" />
-          <IntroPhoto src="/images/intro-2.jpg" label="두 번째 커플 사진" className="portrait-two" />
-        </div>
+        <GreetingIntro />
         <p className="hero-date">2026 · 10 · 25 · SUN</p>
         <h1 id="hero-title">지환 <span>&amp;</span> 서희</h1>
         <p className="hero-place">수원 마이어스 · 오후 12시 10분</p>
