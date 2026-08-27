@@ -208,9 +208,9 @@ function GreetingIntro() {
   );
 }
 
-function SectionHeading({ eyebrow, children }: { eyebrow: string; children: React.ReactNode }) {
+function SectionHeading({ eyebrow, index, children }: { eyebrow: string; index: string; children: React.ReactNode }) {
   return (
-    <header className="section-heading">
+    <header className="section-heading" data-index={index}>
       <p>{eyebrow}</p>
       <h2>{children}</h2>
       <span aria-hidden="true">◆</span>
@@ -409,7 +409,7 @@ export default function Home() {
       </section>
 
       <section className="section invitation-message reveal-section" data-reveal>
-        <SectionHeading eyebrow="INVITATION">소중한 분들을 초대합니다</SectionHeading>
+        <SectionHeading eyebrow="INVITATION" index="01">소중한 분들을 초대합니다</SectionHeading>
         <p className="message-copy">
           여덟 해의 인연을 품고<br />평생의 연을 맺고자 합니다.<br /><br />
           서로를 아끼고 존중하는 마음으로<br />늘 같은 곳을 바라보며 살아가겠습니다.<br /><br />
@@ -421,8 +421,16 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="story-break reveal-section" data-reveal aria-label="함께한 여덟 해의 이야기">
+        <img src="/images/gallery-10.jpg" alt="궁궐 처마 아래 나란히 앉은 지환과 서희" loading="lazy" />
+        <div className="story-break-copy">
+          <span>OUR STORY · EIGHT YEARS</span>
+          <p>함께한 여덟 해,<br />이제 평생을 함께합니다.</p>
+        </div>
+      </section>
+
       <section className="section date-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="THE WEDDING DAY">우리의 결혼식</SectionHeading>
+        <SectionHeading eyebrow="THE WEDDING DAY" index="02">우리의 결혼식</SectionHeading>
         <div className="date-monument" aria-label="2026년 10월 25일 일요일">
           <span>OCT</span>
           <strong>25</strong>
@@ -446,7 +454,7 @@ export default function Home() {
       </section>
 
       <section className="section gallery-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="GALLERY">우리의 순간들</SectionHeading>
+        <SectionHeading eyebrow="GALLERY" index="03">우리의 순간들</SectionHeading>
         <p className="gallery-lead">여덟 해 동안 차곡차곡 쌓인<br />지환과 서희의 장면들</p>
         <div className="gallery-frame">
           <div className="gallery-track" ref={galleryRef}>
@@ -464,7 +472,7 @@ export default function Home() {
       </section>
 
       <section className="section location-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="LOCATION">오시는 길</SectionHeading>
+        <SectionHeading eyebrow="LOCATION" index="04">오시는 길</SectionHeading>
         <div className="venue-copy">
           <h3>수원 마이어스</h3>
           <p>경기 수원시 권선구 경수대로 270<br />터미널동 2층</p>
@@ -481,7 +489,7 @@ export default function Home() {
       </section>
 
       <section className="section account-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="FOR YOUR HEART">마음 전하실 곳</SectionHeading>
+        <SectionHeading eyebrow="FOR YOUR HEART" index="05">마음 전하실 곳</SectionHeading>
         <p className="section-intro">참석이 어려우신 분들을 위해<br />마음 전하실 곳을 안내드립니다.</p>
         {ACCOUNTS.map((group) => (
           <details className={`account-group ${group.tone}`} key={group.side}>
@@ -499,7 +507,7 @@ export default function Home() {
       </section>
 
       <section className="section guestbook-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="GUESTBOOK">축하의 마음을 남겨주세요</SectionHeading>
+        <SectionHeading eyebrow="GUESTBOOK" index="06">축하의 마음을 남겨주세요</SectionHeading>
         <form className="guestbook-form" onSubmit={submitGuestbook}>
           <div className="input-row">
             <label>이름<input name="name" maxLength={20} required placeholder="이름" /></label>
