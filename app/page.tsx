@@ -37,6 +37,22 @@ type GuestbookEntry = {
 
 declare global {
   interface Window {
+    Kakao?: {
+      isInitialized: () => boolean;
+      init: (appKey: string) => void;
+      Share: {
+        sendDefault: (options: {
+          objectType: "feed";
+          content: {
+            title: string;
+            description: string;
+            imageUrl: string;
+            link: { mobileWebUrl: string; webUrl: string };
+          };
+          buttons: Array<{ title: string; link: { mobileWebUrl: string; webUrl: string } }>;
+        }) => void;
+      };
+    };
     kakao?: {
       maps: {
         load: (callback: () => void) => void;
@@ -57,6 +73,57 @@ declare global {
       };
     };
   }
+}
+
+function KakaoShareButton() {
+  const appKey = process.env.NEXT_PUBLIC_KAKAO_MAP_APP_KEY;
+  const [sdkReady, setSdkReady] = useState(false);
+
+  useEffect(() => {
+    if (!appKey) return;
+    const initialize = () => {
+      if (!window.Kakao) return;
+      if (!window.Kakao.isInitialized()) window.Kakao.init(appKey);
+      setSdkReady(true);
+    };
+    if (window.Kakao) {
+      initialize();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js";
+    script.async = true;
+    script.onload = initialize;
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [appKey]);
+
+  const share = async () => {
+    const pageUrl = window.location.href;
+    if (sdkReady && window.Kakao) {
+      window.Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: "최지환 ♥ 윤서희, 결혼합니다",
+          description: "2026년 10월 25일 일요일 오후 12시 10분 · 수원 마이어스",
+          imageUrl: new URL("/og.png", window.location.origin).href,
+          link: { mobileWebUrl: pageUrl, webUrl: pageUrl },
+        },
+        buttons: [
+          { title: "청첩장 보기", link: { mobileWebUrl: pageUrl, webUrl: pageUrl } },
+        ],
+      });
+      return;
+    }
+    if (navigator.share) {
+      await navigator.share({ title: "최지환 ♥ 윤서희, 결혼합니다", text: "2026년 10월 25일 · 수원 마이어스", url: pageUrl });
+      return;
+    }
+    await navigator.clipboard.writeText(pageUrl);
+    window.alert("청첩장 주소를 복사했습니다.");
+  };
+
+  return <button type="button" className="kakao-share-button" onClick={share}><span aria-hidden="true">♥</span> 카카오톡으로 청첩장 공유하기</button>;
 }
 
 function IntroPhoto({ src, label, className }: { src: string; label: string; className: string }) {
@@ -164,6 +231,22 @@ export default function Home() {
   useEffect(() => { loadGuestbook(); }, []);
 
   useEffect(() => {
+    const sections = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8%" },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     if (lightbox === null && !showAllGuestbook && deleteTarget === null) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -262,7 +345,7 @@ export default function Home() {
         <div className="scroll-cue" aria-hidden="true"><span /></div>
       </section>
 
-      <section className="section invitation-message">
+      <section className="section invitation-message reveal-section" data-reveal>
         <SectionHeading eyebrow="INVITATION">소중한 분들을 초대합니다</SectionHeading>
         <p className="message-copy">
           여덟 해의 인연을 품고<br />평생의 연을 맺고자 합니다.<br /><br />
@@ -275,7 +358,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section date-section">
+      <section className="section date-section reveal-section" data-reveal>
         <SectionHeading eyebrow="THE WEDDING DAY">2026년 10월 25일</SectionHeading>
         <p className="date-summary">일요일 오후 12시 10분 · 수원 마이어스</p>
         <div className="calendar" aria-label="2026년 10월 달력">
@@ -294,7 +377,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section gallery-section">
+      <section className="section gallery-section reveal-section" data-reveal>
         <SectionHeading eyebrow="GALLERY">우리의 순간들</SectionHeading>
         <div className="gallery-frame">
           <div className="gallery-track" ref={galleryRef}>
@@ -311,7 +394,7 @@ export default function Home() {
         <p className="gallery-hint">사진을 누르면 크게 볼 수 있어요</p>
       </section>
 
-      <section className="section location-section">
+      <section className="section location-section reveal-section" data-reveal>
         <SectionHeading eyebrow="LOCATION">오시는 길</SectionHeading>
         <div className="venue-copy">
           <h3>수원 마이어스</h3>
@@ -328,7 +411,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section account-section">
+      <section className="section account-section reveal-section" data-reveal>
         <SectionHeading eyebrow="FOR YOUR HEART">마음 전하실 곳</SectionHeading>
         <p className="section-intro">참석이 어려우신 분들을 위해<br />마음 전하실 곳을 안내드립니다.</p>
         {ACCOUNTS.map((group) => (
@@ -346,7 +429,7 @@ export default function Home() {
         ))}
       </section>
 
-      <section className="section guestbook-section">
+      <section className="section guestbook-section reveal-section" data-reveal>
         <SectionHeading eyebrow="GUESTBOOK">축하의 마음을 남겨주세요</SectionHeading>
         <form className="guestbook-form" onSubmit={submitGuestbook}>
           <div className="input-row">
@@ -359,6 +442,11 @@ export default function Home() {
         {guestbookStatus && <p className="guestbook-status">{guestbookStatus}</p>}
         <GuestbookList entries={guestbook.slice(0, 4)} />
         {guestbook.length > 4 && <button className="outline-button" type="button" onClick={() => setShowAllGuestbook(true)}>방명록 전체보기 ({guestbook.length})</button>}
+      </section>
+
+      <section className="share-section reveal-section" data-reveal aria-label="청첩장 공유">
+        <p>소중한 분들께 청첩장을 전해보세요.</p>
+        <KakaoShareButton />
       </section>
 
       <footer>
