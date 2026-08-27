@@ -170,6 +170,10 @@ function GreetingSequence({ onComplete }: { onComplete: () => void }) {
     <div className={`couple-intro ${firstReady && secondReady ? "is-ready" : ""}`} aria-label="정면 사진에서 인사 사진으로 이어지는 커플 사진">
       <IntroPhoto src="/images/intro-1.jpg" label="한복을 입고 정면을 바라보는 지환과 서희" className="portrait-one" onReady={() => setFirstReady(true)} />
       <IntroPhoto src="/images/intro-2.jpg" label="한복을 입고 함께 인사하는 지환과 서희" className="portrait-two" onReady={() => setSecondReady(true)} />
+      <div className="greeting-caption">
+        <span>WELCOME TO OUR WEDDING</span>
+        <strong>귀한 걸음, 감사합니다</strong>
+      </div>
     </div>
   );
 }
