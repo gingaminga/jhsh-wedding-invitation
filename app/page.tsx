@@ -1,0 +1,399 @@
+"use client";
+
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+
+const WEDDING_AT = new Date("2026-10-25T12:10:00+09:00");
+const GALLERY = Array.from({ length: 21 }, (_, index) =>
+  `/images/gallery-${String(index + 1).padStart(2, "0")}.jpg`,
+);
+
+const ACCOUNTS = [
+  {
+    side: "신랑측",
+    tone: "groom",
+    people: [
+      { relation: "신랑", name: "최지환", bank: "카카오뱅크", number: "3333025723576" },
+      { relation: "아버지", name: "최상운", bank: "농협", number: "41505756046605" },
+      { relation: "어머니", name: "최은주", bank: "농협", number: "23701156007751" },
+    ],
+  },
+  {
+    side: "신부측",
+    tone: "bride",
+    people: [
+      { relation: "신부", name: "윤서희", bank: "국민은행", number: "74890200091616" },
+      { relation: "아버지", name: "윤숭열", bank: "우리은행", number: "1002607309184" },
+      { relation: "어머니", name: "이지연", bank: "우리은행", number: "1002509509129" },
+    ],
+  },
+];
+
+type GuestbookEntry = {
+  id: number;
+  name: string;
+  message: string;
+  createdAt: string;
+};
+
+declare global {
+  interface Window {
+    kakao?: {
+      maps: {
+        load: (callback: () => void) => void;
+        Map: new (container: HTMLElement, options: unknown) => unknown;
+        LatLng: new (lat: number, lng: number) => unknown;
+        Marker: new (options: unknown) => { setMap: (map: unknown) => void };
+        ZoomControl: new () => unknown;
+        ControlPosition: { RIGHT: unknown };
+        services: {
+          Geocoder: new () => {
+            addressSearch: (
+              address: string,
+              callback: (result: Array<{ x: string; y: string }>, status: string) => void,
+            ) => void;
+          };
+          Status: { OK: string };
+        };
+      };
+    };
+  }
+}
+
+function IntroPhoto({ src, label, className }: { src: string; label: string; className: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className={`portrait ${className}`}>
+      {!loaded && (
+        <div className="photo-placeholder">
+          <span className="placeholder-mark">J · S</span>
+          <small>{label}</small>
+        </div>
+      )}
+      {/* 첫 화면 사진 파일은 public/images/intro-1.jpg, intro-2.jpg로 교체됩니다. */}
+      <img src={src} alt={label} onLoad={() => setLoaded(true)} className={loaded ? "is-loaded" : ""} />
+    </div>
+  );
+}
+
+function SectionHeading({ eyebrow, children }: { eyebrow: string; children: React.ReactNode }) {
+  return (
+    <header className="section-heading">
+      <p>{eyebrow}</p>
+      <h2>{children}</h2>
+      <span aria-hidden="true">◆</span>
+    </header>
+  );
+}
+
+function KakaoMap() {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const [ready, setReady] = useState(false);
+  const appKey = process.env.NEXT_PUBLIC_KAKAO_MAP_APP_KEY;
+
+  useEffect(() => {
+    if (!appKey || !mapRef.current) return;
+    const renderMap = () => {
+      window.kakao?.maps.load(() => {
+        if (!mapRef.current || !window.kakao) return;
+        const geocoder = new window.kakao.maps.services.Geocoder();
+        geocoder.addressSearch("경기 수원시 권선구 경수대로 270", (result, status) => {
+          if (!mapRef.current || !window.kakao || status !== window.kakao.maps.services.Status.OK) return;
+          const center = new window.kakao.maps.LatLng(Number(result[0].y), Number(result[0].x));
+          const map = new window.kakao.maps.Map(mapRef.current, { center, level: 3 });
+          new window.kakao.maps.Marker({ position: center }).setMap(map);
+          setReady(true);
+        });
+      });
+    };
+
+    if (window.kakao?.maps) {
+      renderMap();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&autoload=false&libraries=services`;
+    script.async = true;
+    script.onload = renderMap;
+    document.head.appendChild(script);
+    return () => script.remove();
+  }, [appKey]);
+
+  return (
+    <div className={`map-wrap ${ready ? "map-ready" : ""}`}>
+      <div ref={mapRef} className="map-canvas" aria-label="수원 마이어스 위치 지도" />
+      {!ready && (
+        <div className="map-fallback">
+          <span className="map-pin" aria-hidden="true">●</span>
+          <strong>수원 마이어스</strong>
+          <p>카카오맵 연결 준비 중</p>
+          {!appKey && <small>배포 전 카카오맵 앱 키를 등록하면 지도가 표시됩니다.</small>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function Home() {
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [showAllGuestbook, setShowAllGuestbook] = useState(false);
+  const [guestbook, setGuestbook] = useState<GuestbookEntry[]>([]);
+  const [guestbookStatus, setGuestbookStatus] = useState("불러오는 중...");
+  const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+
+  const dDay = useMemo(() => {
+    const diff = WEDDING_AT.getTime() - Date.now();
+    const days = Math.ceil(diff / 86_400_000);
+    if (days > 0) return `D-${days}`;
+    if (days === 0) return "D-DAY";
+    return `D+${Math.abs(days)}`;
+  }, []);
+
+  const loadGuestbook = async () => {
+    try {
+      const response = await fetch("/api/guestbook");
+      const data = (await response.json()) as { entries?: GuestbookEntry[]; error?: string };
+      if (!response.ok) throw new Error(data.error);
+      setGuestbook(data.entries ?? []);
+      setGuestbookStatus(data.entries?.length ? "" : "첫 축하 메시지를 남겨주세요.");
+    } catch {
+      setGuestbookStatus("방명록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");
+    }
+  };
+
+  useEffect(() => { loadGuestbook(); }, []);
+
+  useEffect(() => {
+    if (lightbox === null && !showAllGuestbook && deleteTarget === null) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setLightbox(null);
+        setShowAllGuestbook(false);
+        setDeleteTarget(null);
+      }
+      if (lightbox !== null && event.key === "ArrowRight") setLightbox((lightbox + 1) % GALLERY.length);
+      if (lightbox !== null && event.key === "ArrowLeft") setLightbox((lightbox - 1 + GALLERY.length) % GALLERY.length);
+    };
+    document.body.classList.add("modal-open");
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.classList.remove("modal-open");
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightbox, showAllGuestbook, deleteTarget]);
+
+  const moveGallery = (direction: number) => {
+    galleryRef.current?.scrollBy({ left: direction * galleryRef.current.clientWidth * 0.82, behavior: "smooth" });
+  };
+
+  const copyAccount = async (number: string) => {
+    await navigator.clipboard.writeText(number);
+    window.alert("계좌번호를 복사했습니다.");
+  };
+
+  const submitGuestbook = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    setGuestbookStatus("메시지를 남기는 중...");
+    try {
+      const response = await fetch("/api/guestbook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          message: formData.get("message"),
+          password: formData.get("password"),
+        }),
+      });
+      const data = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(data.error);
+      form.reset();
+      await loadGuestbook();
+    } catch (error) {
+      setGuestbookStatus(error instanceof Error ? error.message : "메시지를 남기지 못했어요.");
+    }
+  };
+
+  const deleteGuestbook = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (deleteTarget === null) return;
+    const password = new FormData(event.currentTarget).get("deletePassword");
+    const response = await fetch(`/api/guestbook/${deleteTarget}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+    const data = (await response.json()) as { error?: string };
+    if (!response.ok) {
+      window.alert(data.error ?? "삭제하지 못했습니다.");
+      return;
+    }
+    setDeleteTarget(null);
+    await loadGuestbook();
+  };
+
+  const GuestbookList = ({ entries }: { entries: GuestbookEntry[] }) => (
+    <div className="guestbook-list">
+      {entries.map((entry) => (
+        <article className="guestbook-entry" key={entry.id}>
+          <div>
+            <strong>{entry.name}</strong>
+            <time>{new Date(`${entry.createdAt}Z`).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}</time>
+          </div>
+          <p>{entry.message}</p>
+          <button type="button" onClick={() => setDeleteTarget(entry.id)} aria-label={`${entry.name}님의 방명록 삭제`}>삭제</button>
+        </article>
+      ))}
+    </div>
+  );
+
+  return (
+    <main className="invitation-shell">
+      <section className="hero" aria-labelledby="hero-title">
+        <p className="eyebrow">WE ARE GETTING MARRIED</p>
+        <div className="couple-intro" aria-label="커플 사진이 차례로 나타나는 영역">
+          <IntroPhoto src="/images/intro-1.jpg" label="첫 번째 커플 사진" className="portrait-one" />
+          <IntroPhoto src="/images/intro-2.jpg" label="두 번째 커플 사진" className="portrait-two" />
+        </div>
+        <p className="hero-date">2026 · 10 · 25 · SUN</p>
+        <h1 id="hero-title">지환 <span>&amp;</span> 서희</h1>
+        <p className="hero-place">수원 마이어스 · 오후 12시 10분</p>
+        <div className="scroll-cue" aria-hidden="true"><span /></div>
+      </section>
+
+      <section className="section invitation-message">
+        <SectionHeading eyebrow="INVITATION">소중한 분들을 초대합니다</SectionHeading>
+        <p className="message-copy">
+          여덟 해의 인연을 품고<br />평생의 연을 맺고자 합니다.<br /><br />
+          서로를 아끼고 존중하는 마음으로<br />늘 같은 곳을 바라보며 살아가겠습니다.<br /><br />
+          귀한 걸음 하시어<br />축복해 주시면 감사하겠습니다.
+        </p>
+        <div className="family-lines">
+          <p><span>최상운 · 최은주</span>의 장남 <strong>지환</strong></p>
+          <p><span>윤숭열 · 이지연</span>의 장녀 <strong>서희</strong></p>
+        </div>
+      </section>
+
+      <section className="section date-section">
+        <SectionHeading eyebrow="THE WEDDING DAY">2026년 10월 25일</SectionHeading>
+        <p className="date-summary">일요일 오후 12시 10분 · 수원 마이어스</p>
+        <div className="calendar" aria-label="2026년 10월 달력">
+          <div className="calendar-title">OCTOBER <span>2026</span></div>
+          <div className="calendar-grid week"><b>S</b><b>M</b><b>T</b><b>W</b><b>T</b><b>F</b><b>S</b></div>
+          <div className="calendar-grid days">
+            {["", "", "", "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"].map((day, i) => (
+              <span className={day === "25" ? "wedding-day" : i % 7 === 0 ? "sunday" : ""} key={`${day}-${i}`}>{day}</span>
+            ))}
+          </div>
+        </div>
+        <div className="dday-card">
+          <p>지환과 서희의 결혼식까지</p>
+          <strong>{dDay}</strong>
+          <span>우리의 새로운 시작을 함께해 주세요.</span>
+        </div>
+      </section>
+
+      <section className="section gallery-section">
+        <SectionHeading eyebrow="GALLERY">우리의 순간들</SectionHeading>
+        <div className="gallery-frame">
+          <div className="gallery-track" ref={galleryRef}>
+            {GALLERY.map((src, index) => (
+              <button type="button" className="gallery-item" key={src} onClick={() => setLightbox(index)} aria-label={`${index + 1}번째 사진 크게 보기`}>
+                <img src={src} alt={`지환과 서희의 사진 ${index + 1}`} loading={index < 3 ? "eager" : "lazy"} />
+                <span>{String(index + 1).padStart(2, "0")} / {GALLERY.length}</span>
+              </button>
+            ))}
+          </div>
+          <button className="gallery-arrow prev" type="button" onClick={() => moveGallery(-1)} aria-label="이전 사진">‹</button>
+          <button className="gallery-arrow next" type="button" onClick={() => moveGallery(1)} aria-label="다음 사진">›</button>
+        </div>
+        <p className="gallery-hint">사진을 누르면 크게 볼 수 있어요</p>
+      </section>
+
+      <section className="section location-section">
+        <SectionHeading eyebrow="LOCATION">오시는 길</SectionHeading>
+        <div className="venue-copy">
+          <h3>수원 마이어스</h3>
+          <p>경기 수원시 권선구 경수대로 270<br />터미널동 2층</p>
+        </div>
+        <KakaoMap />
+        <div className="map-actions">
+          <a href="https://map.kakao.com/link/search/수원%20마이어스" target="_blank" rel="noreferrer">카카오맵</a>
+          <a href="https://map.naver.com/p/search/수원%20마이어스" target="_blank" rel="noreferrer">네이버지도</a>
+        </div>
+        <div className="transport-card">
+          <span className="transport-icon" aria-hidden="true">BUS</span>
+          <div><small>안성 출발 전세버스</small><strong>오전 10시 출발</strong><p>한경대학교 산학협력관 주차장 탑승</p></div>
+        </div>
+      </section>
+
+      <section className="section account-section">
+        <SectionHeading eyebrow="FOR YOUR HEART">마음 전하실 곳</SectionHeading>
+        <p className="section-intro">참석이 어려우신 분들을 위해<br />마음 전하실 곳을 안내드립니다.</p>
+        {ACCOUNTS.map((group) => (
+          <details className={`account-group ${group.tone}`} key={group.side}>
+            <summary>{group.side} 계좌번호 <span>⌄</span></summary>
+            <div className="account-list">
+              {group.people.map((person) => (
+                <div className="account-row" key={person.number}>
+                  <div><small>{person.relation}</small><strong>{person.name}</strong><p>{person.bank} {person.number}</p></div>
+                  <button type="button" onClick={() => copyAccount(person.number)}>복사</button>
+                </div>
+              ))}
+            </div>
+          </details>
+        ))}
+      </section>
+
+      <section className="section guestbook-section">
+        <SectionHeading eyebrow="GUESTBOOK">축하의 마음을 남겨주세요</SectionHeading>
+        <form className="guestbook-form" onSubmit={submitGuestbook}>
+          <div className="input-row">
+            <label>이름<input name="name" maxLength={20} required placeholder="이름" /></label>
+            <label>비밀번호<input name="password" type="password" minLength={4} maxLength={30} required placeholder="숫자 4자리 이상" /></label>
+          </div>
+          <label>축하 메시지<textarea name="message" maxLength={300} required placeholder="따뜻한 축하의 마음을 남겨주세요." /></label>
+          <button className="primary-button" type="submit">메시지 남기기</button>
+        </form>
+        {guestbookStatus && <p className="guestbook-status">{guestbookStatus}</p>}
+        <GuestbookList entries={guestbook.slice(0, 4)} />
+        {guestbook.length > 4 && <button className="outline-button" type="button" onClick={() => setShowAllGuestbook(true)}>방명록 전체보기 ({guestbook.length})</button>}
+      </section>
+
+      <footer>
+        <p>JIHWAHN <span>&amp;</span> SEOHEE</p>
+        <small>2026. 10. 25</small>
+      </footer>
+
+      {lightbox !== null && (
+        <div className="modal lightbox" role="dialog" aria-modal="true" aria-label="사진 크게 보기" onClick={() => setLightbox(null)}>
+          <button className="modal-close" type="button" onClick={() => setLightbox(null)} aria-label="닫기">×</button>
+          <button className="lightbox-nav lightbox-prev" type="button" onClick={(e) => { e.stopPropagation(); setLightbox((lightbox - 1 + GALLERY.length) % GALLERY.length); }} aria-label="이전 사진">‹</button>
+          <img src={GALLERY[lightbox]} alt={`지환과 서희의 사진 ${lightbox + 1}`} onClick={(e) => e.stopPropagation()} />
+          <span>{lightbox + 1} / {GALLERY.length}</span>
+          <button className="lightbox-nav lightbox-next" type="button" onClick={(e) => { e.stopPropagation(); setLightbox((lightbox + 1) % GALLERY.length); }} aria-label="다음 사진">›</button>
+        </div>
+      )}
+
+      {showAllGuestbook && (
+        <div className="modal modal-sheet" role="dialog" aria-modal="true" aria-labelledby="guestbook-modal-title" onClick={() => setShowAllGuestbook(false)}>
+          <div className="sheet-content" onClick={(e) => e.stopPropagation()}>
+            <div className="sheet-header"><h2 id="guestbook-modal-title">축하 메시지</h2><button type="button" onClick={() => setShowAllGuestbook(false)} aria-label="닫기">×</button></div>
+            <GuestbookList entries={guestbook} />
+          </div>
+        </div>
+      )}
+
+      {deleteTarget !== null && (
+        <div className="modal confirm-modal" role="dialog" aria-modal="true" aria-labelledby="delete-title" onClick={() => setDeleteTarget(null)}>
+          <form onSubmit={deleteGuestbook} onClick={(e) => e.stopPropagation()}>
+            <h2 id="delete-title">메시지 삭제</h2><p>작성할 때 입력한 비밀번호를 적어주세요.</p>
+            <input name="deletePassword" type="password" required autoFocus placeholder="비밀번호" />
+            <div><button type="button" onClick={() => setDeleteTarget(null)}>취소</button><button type="submit">삭제</button></div>
+          </form>
+        </div>
+      )}
+    </main>
+  );
+}

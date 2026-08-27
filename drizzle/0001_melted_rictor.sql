@@ -1,0 +1,1 @@
+CREATE INDEX `idx_guestbook_entries_created_at` ON `guestbook_entries` (`created_at`,`id`);
