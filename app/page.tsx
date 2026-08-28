@@ -580,11 +580,11 @@ export default function Home() {
         </div>
         <p className="date-summary">일요일 오후 12시 10분 · 수원 마이어스</p>
         <div className="calendar" aria-label="2026년 10월 달력">
-          <div className="calendar-title">OCTOBER <span>2026</span></div>
-          <div className="calendar-grid week"><b>S</b><b>M</b><b>T</b><b>W</b><b>T</b><b>F</b><b>S</b></div>
+          <div className="calendar-title"><span>10</span><div><strong>OCTOBER</strong><small>2026</small></div></div>
+          <div className="calendar-grid week"><b>일</b><b>월</b><b>화</b><b>수</b><b>목</b><b>금</b><b>토</b></div>
           <div className="calendar-grid days">
             {["", "", "", "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"].map((day, i) => (
-              <span className={day === "25" ? "wedding-day" : i % 7 === 0 ? "sunday" : ""} key={`${day}-${i}`}>{day}</span>
+              <span className={day === "25" ? "wedding-day" : i % 7 === 0 ? "sunday" : ""} key={`${day}-${i}`}>{day === "25" ? <><b>25</b><small>12:10</small></> : day}</span>
             ))}
           </div>
         </div>

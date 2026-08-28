@@ -140,21 +140,27 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .date-monument b { color: var(--lilac); font-size: 17px; }
 .date-monument i { color: var(--muted); font-size: 9px; letter-spacing: .15em; }
 .date-summary { margin: 0 0 46px; padding-left: 2px; color: var(--muted); text-align: left; font-size: 13px; }
-.calendar { padding: 28px 16px 20px; border: 1px solid var(--line); background: rgb(255 255 255 / 34%); }
-.calendar-title { margin-bottom: 24px; font-family: Georgia, serif; font-size: 18px; letter-spacing: .12em; }
-.calendar-title span { margin-left: 5px; color: var(--muted); font-size: 11px; }
+.calendar { padding: 24px 18px 18px; border: 1px solid #d9cfc2; background: #f1eae0; box-shadow: inset 0 1px rgb(255 255 255 / 40%); }
+.calendar-title { display: flex; align-items: center; gap: 13px; margin-bottom: 22px; text-align: left; }
+.calendar-title > span { color: var(--dancheong); font-family: Georgia, serif; font-size: 42px; line-height: .8; letter-spacing: -.06em; }
+.calendar-title > div { display: grid; gap: 3px; padding-left: 13px; border-left: 1px solid #cabdaf; }
+.calendar-title strong { font-family: Georgia, serif; font-size: 11px; font-weight: 400; letter-spacing: .18em; }
+.calendar-title small { color: #8d8277; font-family: Georgia, serif; font-size: 9px; letter-spacing: .16em; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); align-items: center; }
-.calendar-grid.week { margin-bottom: 8px; color: #9a938a; font-family: Georgia, serif; font-size: 10px; }
-.calendar-grid.days span { position: relative; display: grid; place-items: center; height: 40px; font-family: Georgia, serif; font-size: 13px; }
-.calendar-grid.days .sunday { color: #a67d75; }
-.wedding-day { z-index: 0; color: white !important; }
-.wedding-day::before { content: ""; position: absolute; z-index: -1; width: 34px; height: 34px; border-radius: 50%; background: var(--dancheong); box-shadow: 0 5px 14px rgb(111 66 55 / 22%); }
-.wedding-day::after { content: "♥"; position: absolute; top: -5px; right: 0; color: var(--blush); font-size: 8px; }
-.dday-card { position: relative; margin: 18px 0 0 36px; padding: 29px 22px; overflow: hidden; border-radius: 0; background: var(--sage-pale); box-shadow: 0 18px 40px rgb(71 88 76 / 8%); text-align: left; }
-.dday-card::after { content: "♥"; position: absolute; right: 18px; top: 50%; color: white; opacity: .8; transform: translateY(-50%); font-family: Georgia, serif; font-size: 72px; }
-.dday-card > * { position: relative; z-index: 1; }
-.dday-card p, .dday-card span { margin: 0; color: #687066; font-size: 12px; }
-.dday-card strong { display: block; margin: 7px 0; color: #576355; font-family: Georgia, serif; font-size: 34px; font-weight: 400; letter-spacing: .05em; }
+.calendar-grid.week { margin-bottom: 5px; padding-bottom: 9px; color: #92877c; border-bottom: 1px solid #ded4c8; font-size: 9px; font-weight: 400; }
+.calendar-grid.week b { font-weight: 500; }
+.calendar-grid.week b:first-child { color: #a26b60; }
+.calendar-grid.days span { position: relative; display: grid; height: 43px; place-items: center; color: #514a44; font-family: Georgia, serif; font-size: 12px; }
+.calendar-grid.days .sunday { color: #a26b60; }
+.wedding-day { z-index: 0; align-content: center; gap: 1px; color: white !important; }
+.wedding-day::before { content: ""; position: absolute; z-index: -1; inset: 3px 2px; background: var(--dancheong); box-shadow: 0 5px 13px rgb(111 66 55 / 16%); }
+.wedding-day b { font-size: 12px; font-weight: 400; line-height: 1; }
+.wedding-day small { color: rgb(255 255 255 / 70%); font-size: 6px; letter-spacing: .04em; }
+.dday-card { display: grid; grid-template-columns: 1fr auto; align-items: center; margin-top: 18px; padding: 25px 4px 23px; border-block: 1px solid #d6cabd; text-align: left; }
+.dday-card p, .dday-card span { margin: 0; color: #7c7167; font-size: 11px; }
+.dday-card p { align-self: end; }
+.dday-card span { align-self: start; margin-top: 5px; }
+.dday-card strong { grid-column: 2; grid-row: 1 / 3; padding-left: 20px; color: var(--dancheong); border-left: 1px solid #d6cabd; font-family: Georgia, serif; font-size: 32px; font-weight: 400; letter-spacing: .03em; }
 
 .gallery-section { padding-inline: 0; overflow: hidden; background: #ebe5dc; }
 .gallery-section .section-heading { padding-inline: 30px; text-align: left; }
