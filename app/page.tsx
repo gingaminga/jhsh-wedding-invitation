@@ -684,8 +684,8 @@ export default function Home() {
       </section>
 
       <section className="section gallery-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="WEDDING PORTRAITS" index="04">우리의 웨딩 기록</SectionHeading>
-        <p className="gallery-lead">평생을 약속한 두 사람이<br />결혼을 앞두고 남긴 특별한 장면들</p>
+        <SectionHeading eyebrow="WEDDING GALLERY" index="04">결혼을 앞둔 우리</SectionHeading>
+        <p className="gallery-lead">서로의 평생을 약속하며<br />가장 빛나는 순간을 담았습니다</p>
         <div className="gallery-frame">
           <div className="gallery-track" ref={galleryRef}>
             {GALLERY.map((src, index) => (
