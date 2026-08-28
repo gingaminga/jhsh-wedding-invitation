@@ -399,8 +399,8 @@ function BusSurveyForm() {
           <label>대표자 이름<input name="name" maxLength={20} required placeholder="이름" autoComplete="name" /></label>
           <label>연락처<input name="phone" type="tel" inputMode="tel" required placeholder="010-0000-0000" autoComplete="tel" /></label>
         </div>
-        <label>왕복 탑승 인원
-          <select name="passengerCount" defaultValue="1" aria-label="전세버스 왕복 탑승 인원">
+        <label>탑승 인원
+          <select name="passengerCount" defaultValue="1" aria-label="전세버스 탑승 인원">
             {counts.slice(1).map((count) => <option value={count} key={count}>{count}명</option>)}
           </select>
         </label>
