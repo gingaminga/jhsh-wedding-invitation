@@ -274,11 +274,12 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .guestbook-form-heading { margin-bottom: 28px; }
 .guestbook-form-heading span { color: var(--sage); font-family: Georgia, serif; font-size: 8px; letter-spacing: .2em; }
 .guestbook-form-heading p { margin: 7px 0 0; color: #8a837b; font-size: 11px; }
-.guestbook-form label { display: block; color: #655f58; font-size: 10px; letter-spacing: .02em; }
+.guestbook-form label { display: block; color: #554f49; font-size: 10px; font-weight: 650; letter-spacing: .03em; }
 .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.guestbook-form input, .guestbook-form textarea { width: 100%; margin-top: 8px; padding: 12px 2px; color: var(--ink); border: 0; border-bottom: 1px solid #cec4b8; border-radius: 0; outline: none; background: transparent; font-size: 13px; transition: border-color .25s ease; }
+.guestbook-form input, .guestbook-form textarea { width: 100%; margin-top: 8px; padding: 13px 12px; color: var(--ink); border: 1px solid #d8cec1; border-radius: 3px; outline: none; background: #eee8df; font-size: 13px; transition: border-color .25s ease, background .25s ease, box-shadow .25s ease; }
 .confirm-modal input { width: 100%; margin-top: 8px; padding: 13px; color: var(--ink); border: 1px solid #ded6cc; border-radius: 3px; outline: none; background: #faf7f2; font-size: 13px; }
-.guestbook-form input:focus, .guestbook-form textarea:focus { border-color: var(--sage); }
+.guestbook-form input::placeholder, .guestbook-form textarea::placeholder { color: #9b9288; }
+.guestbook-form input:focus, .guestbook-form textarea:focus { border-color: #829d90; background: #f4f0ea; box-shadow: 0 0 0 3px rgb(102 140 124 / 9%); }
 .confirm-modal input:focus { border-color: #91a99d; background: white; box-shadow: 0 0 0 3px rgb(102 140 124 / 8%); }
 .guestbook-form textarea { min-height: 104px; margin-bottom: 14px; resize: vertical; line-height: 1.6; }
 .input-row + label { margin-top: 12px; }
