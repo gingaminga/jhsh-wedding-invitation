@@ -133,34 +133,34 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .date-section .section-heading { text-align: left; }
 .date-section .section-heading span, .gallery-section .section-heading span, .location-section .section-heading span { margin-left: 0; }
 .date-monument { display: grid; grid-template-columns: auto 1fr auto; align-items: end; margin: -10px -2px 38px; text-align: left; }
-.date-monument > span { align-self: center; color: var(--dancheong); font-family: Georgia, serif; font-size: 11px; letter-spacing: .28em; writing-mode: vertical-rl; transform: rotate(180deg); }
+.date-monument > span { align-self: center; color: var(--lilac); font-family: Georgia, serif; font-size: 11px; letter-spacing: .28em; writing-mode: vertical-rl; transform: rotate(180deg); }
 .date-monument > strong { margin-left: 10px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: clamp(116px, 35vw, 160px); font-weight: 400; line-height: .74; letter-spacing: -.09em; }
 .date-monument > div { display: grid; gap: 8px; padding: 0 0 3px 16px; border-left: 1px solid var(--blush); }
 .date-monument b, .date-monument i { font-family: Georgia, serif; font-style: normal; font-weight: 400; }
 .date-monument b { color: var(--lilac); font-size: 17px; }
 .date-monument i { color: var(--muted); font-size: 9px; letter-spacing: .15em; }
 .date-summary { margin: 0 0 46px; padding-left: 2px; color: var(--muted); text-align: left; font-size: 13px; }
-.calendar { padding: 24px 18px 18px; border: 1px solid #d9cfc2; background: #f1eae0; box-shadow: inset 0 1px rgb(255 255 255 / 40%); }
+.calendar { padding: 24px 4px 18px; border-block: 1px solid var(--line); background: transparent; }
 .calendar-title { display: flex; align-items: center; gap: 13px; margin-bottom: 22px; text-align: left; }
-.calendar-title > span { color: var(--dancheong); font-family: Georgia, serif; font-size: 42px; line-height: .8; letter-spacing: -.06em; }
-.calendar-title > div { display: grid; gap: 3px; padding-left: 13px; border-left: 1px solid #cabdaf; }
+.calendar-title > span { color: var(--lilac); font-family: Georgia, serif; font-size: 42px; line-height: .8; letter-spacing: -.06em; }
+.calendar-title > div { display: grid; gap: 3px; padding-left: 13px; border-left: 1px solid var(--line); }
 .calendar-title strong { font-family: Georgia, serif; font-size: 11px; font-weight: 400; letter-spacing: .18em; }
-.calendar-title small { color: #8d8277; font-family: Georgia, serif; font-size: 9px; letter-spacing: .16em; }
+.calendar-title small { color: var(--muted); font-family: Georgia, serif; font-size: 9px; letter-spacing: .16em; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); align-items: center; }
-.calendar-grid.week { margin-bottom: 5px; padding-bottom: 9px; color: #92877c; border-bottom: 1px solid #ded4c8; font-size: 9px; font-weight: 400; }
+.calendar-grid.week { margin-bottom: 5px; padding-bottom: 9px; color: #938c85; border-bottom: 1px solid var(--line); font-size: 9px; font-weight: 400; }
 .calendar-grid.week b { font-weight: 500; }
-.calendar-grid.week b:first-child { color: #a26b60; }
+.calendar-grid.week b:first-child { color: var(--blush); }
 .calendar-grid.days span { position: relative; display: grid; height: 43px; place-items: center; color: #514a44; font-family: Georgia, serif; font-size: 12px; }
-.calendar-grid.days .sunday { color: #a26b60; }
-.wedding-day { z-index: 0; align-content: center; gap: 1px; color: white !important; }
-.wedding-day::before { content: ""; position: absolute; z-index: -1; inset: 3px 2px; background: var(--dancheong); box-shadow: 0 5px 13px rgb(111 66 55 / 16%); }
+.calendar-grid.days .sunday { color: #b27f84; }
+.wedding-day { z-index: 0; align-content: center; gap: 1px; color: var(--ink) !important; }
+.wedding-day::before { content: ""; position: absolute; z-index: -1; width: 39px; height: 39px; border: 1px solid rgb(157 145 180 / 45%); border-radius: 50%; background: rgb(157 145 180 / 14%); }
 .wedding-day b { font-size: 12px; font-weight: 400; line-height: 1; }
-.wedding-day small { color: rgb(255 255 255 / 70%); font-size: 6px; letter-spacing: .04em; }
-.dday-card { display: grid; grid-template-columns: 1fr auto; align-items: center; margin-top: 18px; padding: 25px 4px 23px; border-block: 1px solid #d6cabd; text-align: left; }
-.dday-card p, .dday-card span { margin: 0; color: #7c7167; font-size: 11px; }
+.wedding-day small { color: var(--lilac); font-size: 6px; letter-spacing: .04em; }
+.dday-card { display: grid; grid-template-columns: 1fr auto; align-items: center; margin-top: 0; padding: 25px 4px 23px; border-bottom: 1px solid var(--line); text-align: left; }
+.dday-card p, .dday-card span { margin: 0; color: var(--muted); font-size: 11px; }
 .dday-card p { align-self: end; }
 .dday-card span { align-self: start; margin-top: 5px; }
-.dday-card strong { grid-column: 2; grid-row: 1 / 3; padding-left: 20px; color: var(--dancheong); border-left: 1px solid #d6cabd; font-family: Georgia, serif; font-size: 32px; font-weight: 400; letter-spacing: .03em; }
+.dday-card strong { grid-column: 2; grid-row: 1 / 3; padding-left: 20px; color: var(--ink); border-left: 1px solid var(--line); font-family: Georgia, serif; font-size: 32px; font-weight: 400; letter-spacing: .03em; }
 
 .gallery-section { padding-inline: 0; overflow: hidden; background: #ebe5dc; }
 .gallery-section .section-heading { padding-inline: 30px; text-align: left; }
