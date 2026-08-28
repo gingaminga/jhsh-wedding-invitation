@@ -319,11 +319,11 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .link-copy-button { width: 100%; padding: 14px; color: #5f5952; border: 1px solid var(--line); border-radius: 3px; background: transparent; font-size: 12px; cursor: pointer; transition: color .2s, border-color .2s, background .2s, transform .2s; }
 .link-copy-button.is-copied { color: #52685c; border-color: #9fb5a6; background: rgb(102 140 124 / 8%); }
 
-footer { padding: 65px 20px; color: #eee9e2; text-align: center; background: #343630; }
+footer { position: relative; padding: 65px 20px 78px; color: #eee9e2; text-align: center; background: #343630; }
 footer p { margin: 0 0 8px; font-family: Georgia, serif; font-size: 13px; letter-spacing: .18em; }
 footer p span { color: #a8af9f; }
 footer small { color: #989a94; font-size: 9px; letter-spacing: .2em; }
-.footer-credit { display: block; margin-top: 27px; color: #777a74; font-family: Georgia, "Noto Serif KR", serif; font-size: 9px; letter-spacing: .12em; }
+.footer-credit { position: absolute; right: 18px; bottom: 18px; color: #777a74; font-family: Georgia, "Noto Serif KR", serif; font-size: 9px; letter-spacing: .12em; }
 
 .modal { position: fixed; z-index: 100; inset: 0; }
 .survey-layer { display: flex; justify-content: center; background: rgb(22 20 18 / 72%); backdrop-filter: blur(6px); }
