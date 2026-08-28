@@ -1,0 +1,1 @@
+ALTER TABLE `bus_survey_responses` DROP COLUMN `return_count`;

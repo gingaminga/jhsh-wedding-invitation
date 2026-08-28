@@ -355,7 +355,6 @@ function BusSurveyForm() {
     setStatus("");
     const form = event.currentTarget;
     const data = new FormData(form);
-    const returnValue = data.get("returnCount");
     try {
       const response = await fetch("/api/bus-survey", {
         method: "POST",
@@ -363,8 +362,7 @@ function BusSurveyForm() {
         body: JSON.stringify({
           name: data.get("name"),
           phone: data.get("phone"),
-          outboundCount: data.get("outboundCount"),
-          returnCount: returnValue === "" ? null : returnValue,
+          passengerCount: data.get("passengerCount"),
           note: data.get("note"),
         }),
       });
@@ -401,24 +399,16 @@ function BusSurveyForm() {
           <label>대표자 이름<input name="name" maxLength={20} required placeholder="이름" autoComplete="name" /></label>
           <label>연락처<input name="phone" type="tel" inputMode="tel" required placeholder="010-0000-0000" autoComplete="tel" /></label>
         </div>
-        <div className="bus-count-row">
-          <label>안성 → 수원
-            <select name="outboundCount" defaultValue="1" aria-label="안성에서 수원행 탑승 인원">
-              {counts.map((count) => <option value={count} key={count}>{count}명</option>)}
-            </select>
-          </label>
-          <label>수원 → 안성
-            <select name="returnCount" defaultValue="" aria-label="수원에서 안성행 탑승 인원">
-              <option value="">미정</option>
-              {counts.map((count) => <option value={count} key={count}>{count}명</option>)}
-            </select>
-          </label>
-        </div>
+        <label>왕복 탑승 인원
+          <select name="passengerCount" defaultValue="1" aria-label="전세버스 왕복 탑승 인원">
+            {counts.slice(1).map((count) => <option value={count} key={count}>{count}명</option>)}
+          </select>
+        </label>
         <label>전달 사항<textarea name="note" maxLength={200} placeholder="어린이 동반, 짐 등 전달 사항이 있다면 적어주세요." /></label>
         <label className="survey-consent"><input type="checkbox" required /> <span>탑승 안내를 위한 이름·연락처 수집에 동의합니다.</span></label>
         <button className="primary-button" type="submit" disabled={submitting}>{submitting ? "저장 중..." : "수요조사 제출하기"}</button>
       </form>
-      <p className="bus-survey-footnote">같은 연락처로 다시 제출하면 가장 최근 응답으로 수정됩니다.<br />귀가편은 예식 종료 후 기사님 안내에 따라 출발합니다.</p>
+      <p className="bus-survey-footnote">같은 연락처로 다시 제출하면 가장 최근 응답으로 수정됩니다.<br />동일 인원이 왕복 탑승하며, 귀가편은 예식 종료 후 기사님 안내에 따라 출발합니다.</p>
       {status && <p className={`bus-survey-status ${status.includes("저장되었습니다") ? "is-success" : ""}`} role="status">{status}</p>}
     </div>
   );

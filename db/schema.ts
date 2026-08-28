@@ -20,7 +20,6 @@ export const busSurveyResponses = sqliteTable(
     name: text("name").notNull(),
     phone: text("phone").notNull().unique(),
     outboundCount: integer("outbound_count").notNull(),
-    returnCount: integer("return_count"),
     note: text("note").notNull().default(""),
     createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
     updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),

@@ -7,7 +7,6 @@ export async function ensureBusSurveySchema() {
       name TEXT NOT NULL,
       phone TEXT NOT NULL UNIQUE,
       outbound_count INTEGER NOT NULL,
-      return_count INTEGER,
       note TEXT NOT NULL DEFAULT '',
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP

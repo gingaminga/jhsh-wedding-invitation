@@ -2,10 +2,9 @@ import { ensureBusSurveySchema, getBusSurveyDb } from "../../../db/bus-survey";
 
 const DEADLINE = new Date("2026-10-23T23:59:59+09:00");
 
-function parseCount(value: unknown, nullable = false) {
-  if (nullable && (value === null || value === "" || typeof value === "undefined")) return null;
+function parseCount(value: unknown) {
   const count = Number(value);
-  return Number.isInteger(count) && count >= 0 && count <= 10 ? count : Number.NaN;
+  return Number.isInteger(count) && count >= 1 && count <= 10 ? count : Number.NaN;
 }
 
 export async function POST(request: Request) {
@@ -18,30 +17,25 @@ export async function POST(request: Request) {
     const name = typeof payload.name === "string" ? payload.name.trim() : "";
     const phone = typeof payload.phone === "string" ? payload.phone.replace(/\D/g, "") : "";
     const note = typeof payload.note === "string" ? payload.note.trim() : "";
-    const outboundCount = parseCount(payload.outboundCount);
-    const returnCount = parseCount(payload.returnCount, true);
+    const passengerCount = parseCount(payload.passengerCount);
 
     if (!name || name.length > 20 || !/^01\d{8,9}$/.test(phone)) {
       return Response.json({ error: "대표자 이름과 휴대전화 번호를 확인해 주세요." }, { status: 400 });
     }
-    if (Number.isNaN(outboundCount) || Number.isNaN(returnCount) || note.length > 200) {
+    if (Number.isNaN(passengerCount) || note.length > 200) {
       return Response.json({ error: "탑승 인원과 전달 사항을 확인해 주세요." }, { status: 400 });
-    }
-    if (outboundCount === 0 && returnCount === 0) {
-      return Response.json({ error: "가는 편 또는 오는 편 탑승 인원을 선택해 주세요." }, { status: 400 });
     }
 
     await ensureBusSurveySchema();
     await getBusSurveyDb()
-      .prepare(`INSERT INTO bus_survey_responses (name, phone, outbound_count, return_count, note)
-        VALUES (?, ?, ?, ?, ?)
+      .prepare(`INSERT INTO bus_survey_responses (name, phone, outbound_count, note)
+        VALUES (?, ?, ?, ?)
         ON CONFLICT(phone) DO UPDATE SET
           name = excluded.name,
           outbound_count = excluded.outbound_count,
-          return_count = excluded.return_count,
           note = excluded.note,
           updated_at = CURRENT_TIMESTAMP`)
-      .bind(name, phone, outboundCount, returnCount, note)
+      .bind(name, phone, passengerCount, note)
       .run();
 
     return Response.json({ ok: true, updated: true });
