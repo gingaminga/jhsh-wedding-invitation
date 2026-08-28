@@ -7,6 +7,13 @@ const GALLERY = Array.from({ length: 21 }, (_, index) =>
   `/images/gallery-${String(index + 1).padStart(2, "0")}.jpg`,
 );
 
+const TIMELINE = [
+  { year: "2018", label: "OUR BEGINNING", title: "우리의 시작", copy: "서로의 일상에 천천히 스며들며\n두 사람의 이야기가 시작되었습니다.", image: "/images/gallery-15.jpg" },
+  { year: "2021", label: "TOGETHER", title: "함께한 계절", copy: "기쁜 날도 평범한 날도 함께하며\n서로에게 가장 편안한 사람이 되었습니다.", image: "/images/gallery-06.jpg" },
+  { year: "2024", label: "ONE DIRECTION", title: "같은 곳을 바라보며", copy: "오랜 시간 쌓아온 믿음을 품고\n같은 방향으로 걸어가기로 했습니다.", image: "/images/gallery-10.jpg" },
+  { year: "2026", label: "THE WEDDING", title: "평생을 약속합니다", copy: "여덟 해의 연인에서 평생의 가족으로,\n새로운 이야기를 시작합니다.", image: "/images/gallery-01.jpg" },
+];
+
 const ACCOUNTS = [
   {
     side: "신랑측",
@@ -218,6 +225,74 @@ function SectionHeading({ eyebrow, index, children }: { eyebrow: string; index: 
   );
 }
 
+function RelationshipTimeline() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+
+  const moveTo = (index: number) => {
+    const next = Math.max(0, Math.min(TIMELINE.length - 1, index));
+    const track = trackRef.current;
+    const item = track?.children[next] as HTMLElement | undefined;
+    if (track && item) track.scrollTo({ left: item.offsetLeft - 28, behavior: "smooth" });
+    setActive(next);
+  };
+
+  const syncActive = () => {
+    const track = trackRef.current;
+    if (!track) return;
+    const items = Array.from(track.children) as HTMLElement[];
+    const closest = items.reduce((best, item, index) =>
+      Math.abs(item.offsetLeft - track.scrollLeft - 28) < Math.abs(items[best].offsetLeft - track.scrollLeft - 28) ? index : best, 0);
+    setActive(closest);
+  };
+
+  return (
+    <section className="timeline-section reveal-section" data-reveal aria-label="지환과 서희의 8년 타임라인">
+      <div className="timeline-heading-wrap">
+        <SectionHeading eyebrow="OUR STORY · EIGHT YEARS" index="02">우리의 시간</SectionHeading>
+        <p>손끝으로 넘겨보는<br />지환과 서희의 여덟 해</p>
+      </div>
+      <div className="timeline-frame">
+        <div
+          className="timeline-track"
+          ref={trackRef}
+          onScroll={syncActive}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowLeft") moveTo(active - 1);
+            if (event.key === "ArrowRight") moveTo(active + 1);
+          }}
+          tabIndex={0}
+          role="group"
+          aria-label="연도별 이야기. 좌우 방향키로 이동할 수 있습니다."
+        >
+          {TIMELINE.map((item, index) => (
+            <article className={`timeline-card ${active === index ? "is-active" : ""}`} key={item.year} aria-label={`${item.year}년 ${item.title}`}>
+              <img src={item.image} alt="" loading={index === 0 ? "eager" : "lazy"} />
+              <div className="timeline-overlay" />
+              <div className="timeline-year">{item.year}</div>
+              <div className="timeline-copy">
+                <span>{item.label}</span>
+                <h3>{item.title}</h3>
+                <p>{item.copy.split("\n").map((line) => <span key={line}>{line}</span>)}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <button type="button" className="timeline-arrow timeline-prev" onClick={() => moveTo(active - 1)} disabled={active === 0} aria-label="이전 이야기">‹</button>
+        <button type="button" className="timeline-arrow timeline-next" onClick={() => moveTo(active + 1)} disabled={active === TIMELINE.length - 1} aria-label="다음 이야기">›</button>
+      </div>
+      <div className="timeline-progress" aria-label={`전체 ${TIMELINE.length}개 중 ${active + 1}번째`}>
+        {TIMELINE.map((item, index) => (
+          <button type="button" className={active === index ? "is-active" : ""} onClick={() => moveTo(index)} key={item.year} aria-label={`${item.year}년으로 이동`}>
+            <span>{item.year}</span>
+          </button>
+        ))}
+      </div>
+      <p className="timeline-hint">SWIPE · DRAG · ARROW KEYS</p>
+    </section>
+  );
+}
+
 function KakaoMap() {
   const mapRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
@@ -421,16 +496,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="story-break reveal-section" data-reveal aria-label="함께한 여덟 해의 이야기">
-        <img src="/images/gallery-10.jpg" alt="궁궐 처마 아래 나란히 앉은 지환과 서희" loading="lazy" />
-        <div className="story-break-copy">
-          <span>OUR STORY · EIGHT YEARS</span>
-          <p>함께한 여덟 해,<br />이제 평생을 함께합니다.</p>
-        </div>
-      </section>
+      <RelationshipTimeline />
 
       <section className="section date-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="THE WEDDING DAY" index="02">우리의 결혼식</SectionHeading>
+        <SectionHeading eyebrow="THE WEDDING DAY" index="03">우리의 결혼식</SectionHeading>
         <div className="date-monument" aria-label="2026년 10월 25일 일요일">
           <span>OCT</span>
           <strong>25</strong>
@@ -454,7 +523,7 @@ export default function Home() {
       </section>
 
       <section className="section gallery-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="GALLERY" index="03">우리의 순간들</SectionHeading>
+        <SectionHeading eyebrow="GALLERY" index="04">우리의 순간들</SectionHeading>
         <p className="gallery-lead">여덟 해 동안 차곡차곡 쌓인<br />지환과 서희의 장면들</p>
         <div className="gallery-frame">
           <div className="gallery-track" ref={galleryRef}>
@@ -472,7 +541,7 @@ export default function Home() {
       </section>
 
       <section className="section location-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="LOCATION" index="04">오시는 길</SectionHeading>
+        <SectionHeading eyebrow="LOCATION" index="05">오시는 길</SectionHeading>
         <div className="venue-copy">
           <h3>수원 마이어스</h3>
           <p>경기 수원시 권선구 경수대로 270<br />터미널동 2층</p>
@@ -489,7 +558,7 @@ export default function Home() {
       </section>
 
       <section className="section account-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="FOR YOUR HEART" index="05">마음 전하실 곳</SectionHeading>
+        <SectionHeading eyebrow="FOR YOUR HEART" index="06">마음 전하실 곳</SectionHeading>
         <p className="section-intro">참석이 어려우신 분들을 위해<br />마음 전하실 곳을 안내드립니다.</p>
         {ACCOUNTS.map((group) => (
           <details className={`account-group ${group.tone}`} key={group.side}>
@@ -507,7 +576,7 @@ export default function Home() {
       </section>
 
       <section className="section guestbook-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="GUESTBOOK" index="06">축하의 마음을 남겨주세요</SectionHeading>
+        <SectionHeading eyebrow="GUESTBOOK" index="07">축하의 마음을 남겨주세요</SectionHeading>
         <form className="guestbook-form" onSubmit={submitGuestbook}>
           <div className="input-row">
             <label>이름<input name="name" maxLength={20} required placeholder="이름" /></label>
