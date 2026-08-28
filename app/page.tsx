@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const WEDDING_AT = new Date("2026-10-25T12:10:00+09:00");
+const BUS_SURVEY_DEADLINE = new Date("2026-10-23T23:59:59+09:00");
 const GALLERY = Array.from({ length: 21 }, (_, index) =>
   `/images/gallery-${String(index + 1).padStart(2, "0")}.jpg`,
 );
@@ -342,6 +343,87 @@ function KakaoMap() {
   );
 }
 
+function BusSurveyForm() {
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState("");
+  const closed = Date.now() > BUS_SURVEY_DEADLINE.getTime();
+  const counts = Array.from({ length: 11 }, (_, index) => index);
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    setStatus("");
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const returnValue = data.get("returnCount");
+    try {
+      const response = await fetch("/api/bus-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.get("name"),
+          phone: data.get("phone"),
+          outboundCount: data.get("outboundCount"),
+          returnCount: returnValue === "" ? null : returnValue,
+          note: data.get("note"),
+        }),
+      });
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error);
+      setStatus("수요조사 응답이 저장되었습니다. 같은 연락처로 다시 제출하면 응답이 수정됩니다.");
+    } catch (error) {
+      setStatus(error instanceof Error && error.message ? error.message : "응답을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (closed) {
+    return (
+      <div className="bus-survey bus-survey-closed">
+        <span className="bus-survey-label">SHUTTLE SURVEY</span>
+        <h3>전세버스 수요조사 마감</h3>
+        <p>추가 탑승 또는 신청 변경이 필요하신 경우<br />신랑·신부에게 개별 연락 부탁드립니다.</p>
+        <button type="button" onClick={() => window.alert("전세버스 수요조사가 마감되었습니다. 추가 탑승 또는 신청 변경은 신랑·신부에게 개별 연락 부탁드립니다.")}>마감 안내 확인</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bus-survey">
+      <div className="bus-survey-heading">
+        <div><span className="bus-survey-label">SHUTTLE SURVEY</span><h3>전세버스 탑승 수요조사</h3></div>
+        <strong>DUE<br /><time dateTime="2026-10-23">10.23</time></strong>
+      </div>
+      <p className="bus-survey-copy">원활한 차량 준비를 위한 예상 인원 조사입니다.<br />신청이 좌석 확정을 의미하지는 않습니다.</p>
+      <form className="bus-survey-form" onSubmit={submit}>
+        <div className="input-row">
+          <label>대표자 이름<input name="name" maxLength={20} required placeholder="이름" autoComplete="name" /></label>
+          <label>연락처<input name="phone" type="tel" inputMode="tel" required placeholder="010-0000-0000" autoComplete="tel" /></label>
+        </div>
+        <div className="bus-count-row">
+          <label>안성 → 수원
+            <select name="outboundCount" defaultValue="1" aria-label="안성에서 수원행 탑승 인원">
+              {counts.map((count) => <option value={count} key={count}>{count}명</option>)}
+            </select>
+          </label>
+          <label>수원 → 안성
+            <select name="returnCount" defaultValue="" aria-label="수원에서 안성행 탑승 인원">
+              <option value="">미정</option>
+              {counts.map((count) => <option value={count} key={count}>{count}명</option>)}
+            </select>
+          </label>
+        </div>
+        <label>전달 사항<textarea name="note" maxLength={200} placeholder="어린이 동반, 짐 등 전달 사항이 있다면 적어주세요." /></label>
+        <label className="survey-consent"><input type="checkbox" required /> <span>탑승 안내를 위한 이름·연락처 수집에 동의합니다.</span></label>
+        <button className="primary-button" type="submit" disabled={submitting}>{submitting ? "저장 중..." : "수요조사 제출하기"}</button>
+      </form>
+      <p className="bus-survey-footnote">같은 연락처로 다시 제출하면 가장 최근 응답으로 수정됩니다.<br />귀가편은 예식 종료 후 기사님 안내에 따라 출발합니다.</p>
+      {status && <p className={`bus-survey-status ${status.includes("저장되었습니다") ? "is-success" : ""}`} role="status">{status}</p>}
+    </div>
+  );
+}
+
 export default function Home() {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -556,6 +638,7 @@ export default function Home() {
           <span className="transport-icon" aria-hidden="true">BUS</span>
           <div><small>안성 출발 전세버스</small><strong>오전 10시 출발</strong><p>한경대학교 산학협력관 주차장 탑승</p></div>
         </div>
+        <BusSurveyForm />
       </section>
 
       <section className="section account-section reveal-section" data-reveal>
