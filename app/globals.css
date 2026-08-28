@@ -194,14 +194,20 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .map-actions { display: grid; grid-template-columns: 1fr 1fr; margin-top: 10px; gap: 8px; }
 .map-actions a { padding: 13px; color: #56514a; border: 1px solid var(--line); background: rgb(255 255 255 / 38%); text-decoration: none; font-size: 12px; transition: transform .2s ease, border-color .2s ease, background .2s ease; }
 .map-actions a::after { content: " ↗"; color: var(--sage); }
-.transport-card { display: flex; align-items: center; gap: 17px; margin-top: 34px; padding: 24px; border-left: 3px solid var(--dancheong); text-align: left; background: #f0e9e0; }
-.transport-icon { display: grid; flex: 0 0 46px; height: 46px; place-items: center; border: 1px solid var(--beige); border-radius: 50%; color: #8c7f70; font-family: Georgia, serif; font-size: 9px; }
+.shuttle-section { overflow: hidden; color: white; background: #302b28; }
+.shuttle-section .section-heading { text-align: left; }
+.shuttle-section .section-heading::after { color: var(--blush); opacity: .13; }
+.shuttle-section .section-heading p { color: #a8bcae; }
+.shuttle-section .section-heading h2 { color: white; }
+.shuttle-section .section-heading span { margin-left: 0; color: var(--blush); }
+.transport-card { display: flex; align-items: center; gap: 17px; margin-top: -12px; padding: 0 0 30px; border-bottom: 1px solid #504945; text-align: left; }
+.transport-icon { display: grid; flex: 0 0 46px; height: 46px; place-items: center; border: 1px solid #6d625c; border-radius: 50%; color: #b8aaa1; font-family: Georgia, serif; font-size: 9px; }
 .transport-card small, .transport-card strong { display: block; }
-.transport-card small { margin-bottom: 3px; color: var(--muted); font-size: 10px; }
+.transport-card small { margin-bottom: 3px; color: #a8a09a; font-size: 10px; }
 .transport-card strong { font-size: 15px; font-weight: 600; }
-.transport-card p { margin: 5px 0 0; color: var(--muted); font-size: 12px; }
+.transport-card p { margin: 5px 0 0; color: #bbb2ac; font-size: 12px; }
 
-.bus-survey { margin: 42px -30px -112px; padding: 54px 30px 66px; color: white; background: #302b28; text-align: left; }
+.bus-survey { margin-top: 42px; color: white; text-align: left; }
 .bus-survey-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
 .bus-survey-label { display: block; margin-bottom: 10px; color: #aec1b3; font-family: Georgia, serif; font-size: 8px; letter-spacing: .22em; }
 .bus-survey h3 { margin: 0; font-family: Georgia, "Noto Serif KR", serif; font-size: 22px; font-weight: 400; letter-spacing: -.04em; }
@@ -306,5 +312,5 @@ footer small { color: #989a94; font-size: 9px; letter-spacing: .2em; }
 @media (hover: none) { .timeline-arrow { display: none; } }
 @media (min-width: 700px) { .gallery-item { flex-basis: 76%; } .gallery-item:nth-child(even) { flex-basis: 56%; } }
 @media (max-height: 700px) { .hero { padding-block: 20px; } .greeting-stage { margin-block: 14px 18px; } .couple-intro { height: 68svh; min-height: 430px; } .scroll-cue { display: none; } }
-@media (max-width: 380px) { .section { padding-inline: 22px; } .gallery-section { padding-inline: 0; } .timeline-heading-wrap { grid-template-columns: 1fr; padding-inline: 22px; } .timeline-heading-wrap > p { text-align: left; } .timeline-card { flex-basis: calc(100% - 44px); height: 540px; } .date-monument > strong { font-size: 112px; } .map-wrap { margin-inline: -22px; } .bus-survey { margin-inline: -22px; padding-inline: 22px; } .gallery-item { height: 480px; } .gallery-item:nth-child(even) { height: 380px; } .input-row { grid-template-columns: 1fr; } }
+@media (max-width: 380px) { .section { padding-inline: 22px; } .gallery-section { padding-inline: 0; } .timeline-heading-wrap { grid-template-columns: 1fr; padding-inline: 22px; } .timeline-heading-wrap > p { text-align: left; } .timeline-card { flex-basis: calc(100% - 44px); height: 540px; } .map-wrap { margin-inline: -22px; } .gallery-item { height: 480px; } .gallery-item:nth-child(even) { height: 380px; } .input-row { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } .reveal-section > * { opacity: 1; transform: none; } }

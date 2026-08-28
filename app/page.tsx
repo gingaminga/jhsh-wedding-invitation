@@ -619,6 +619,10 @@ export default function Home() {
           <a href="https://map.kakao.com/link/search/수원%20마이어스" target="_blank" rel="noreferrer">카카오맵</a>
           <a href="https://map.naver.com/p/search/수원%20마이어스" target="_blank" rel="noreferrer">네이버지도</a>
         </div>
+      </section>
+
+      <section className="section shuttle-section reveal-section" data-reveal>
+        <SectionHeading eyebrow="SHUTTLE BUS" index="06">안성 전세버스 안내</SectionHeading>
         <div className="transport-card">
           <span className="transport-icon" aria-hidden="true">BUS</span>
           <div><small>안성 출발 전세버스</small><strong>오전 10시 출발</strong><p>한경대학교 산학협력관 주차장 탑승</p></div>
@@ -627,7 +631,7 @@ export default function Home() {
       </section>
 
       <section className="section account-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="FOR YOUR HEART" index="06">마음 전하실 곳</SectionHeading>
+        <SectionHeading eyebrow="FOR YOUR HEART" index="07">마음 전하실 곳</SectionHeading>
         <p className="section-intro">참석이 어려우신 분들을 위해<br />마음 전하실 곳을 안내드립니다.</p>
         {ACCOUNTS.map((group) => (
           <details className={`account-group ${group.tone}`} key={group.side}>
@@ -645,7 +649,7 @@ export default function Home() {
       </section>
 
       <section className="section guestbook-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="GUESTBOOK" index="07">축하의 마음을 남겨주세요</SectionHeading>
+        <SectionHeading eyebrow="GUESTBOOK" index="08">축하의 마음을 남겨주세요</SectionHeading>
         <form className="guestbook-form" onSubmit={submitGuestbook}>
           <div className="input-row">
             <label>이름<input name="name" maxLength={20} required placeholder="이름" /></label>
