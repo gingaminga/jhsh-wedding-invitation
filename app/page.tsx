@@ -212,7 +212,6 @@ function GreetingSequence({ onComplete }: { onComplete: () => void }) {
 }
 
 function GreetingIntro() {
-  const [cycle, setCycle] = useState(0);
   const [completed, setCompleted] = useState(false);
   const completeGreeting = useCallback(() => setCompleted(true), []);
 
@@ -228,15 +227,9 @@ function GreetingIntro() {
     return () => document.body.classList.remove("greeting-locked");
   }, [completed]);
 
-  const replay = () => {
-    setCompleted(false);
-    setCycle((value) => value + 1);
-  };
-
   return (
     <div className="greeting-stage">
-      <GreetingSequence key={cycle} onComplete={completeGreeting} />
-      <button type="button" className="greeting-replay" onClick={replay} aria-label="첫 화면 인사 사진 다시 보기">↻ 인사 다시 보기</button>
+      <GreetingSequence onComplete={completeGreeting} />
     </div>
   );
 }
@@ -650,9 +643,9 @@ export default function Home() {
       <section className="hero" aria-labelledby="hero-title">
         <p className="eyebrow">WE ARE GETTING MARRIED</p>
         <GreetingIntro />
-        <p className="hero-date">2026 · 10 · 25 · SUN</p>
         <h1 id="hero-title">지환 <span>&amp;</span> 서희</h1>
-        <p className="hero-place">수원 마이어스 · 오후 12시 10분</p>
+        <p className="hero-date">2026 · 10 · 25 · SUN</p>
+        <p className="hero-place">오후 12시 10분 · 수원 마이어스</p>
         <div className="scroll-cue" aria-hidden="true"><span /></div>
       </section>
 
@@ -673,7 +666,7 @@ export default function Home() {
 
       <section className="section date-section reveal-section" data-reveal>
         <SectionHeading eyebrow="THE WEDDING DAY" index="03">우리의 결혼식</SectionHeading>
-        <p className="date-summary">일요일 오후 12시 10분 · 수원 마이어스</p>
+        <p className="date-summary">오후 12시 10분 · 수원 마이어스</p>
         <div className="calendar" aria-label="2026년 10월 달력">
           <div className="calendar-title"><span>10</span><div><strong>OCTOBER</strong><small>2026</small></div></div>
           <div className="calendar-grid week"><b>일</b><b>월</b><b>화</b><b>수</b><b>목</b><b>금</b><b>토</b></div>
@@ -773,7 +766,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <p>JIHWAHN <span>&amp;</span> SEOHEE</p>
+        <p>JIHWAHN <span>&amp;</span> SEOHUI</p>
         <small>2026. 10. 25</small>
       </footer>
 

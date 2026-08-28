@@ -53,16 +53,15 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
   0%, 54% { opacity: 0; }
   78%, 100% { opacity: 1; }
 }
-.greeting-replay { position: absolute; z-index: 4; top: 10px; right: 10px; padding: 7px 10px; color: white; border: 1px solid rgb(255 255 255 / 45%); border-radius: 99px; background: rgb(29 25 22 / 36%); font-size: 9px; letter-spacing: .02em; backdrop-filter: blur(5px); cursor: pointer; }
 .greeting-caption { position: absolute; z-index: 3; right: 0; bottom: 0; left: 0; padding: 74px 22px 22px; color: white; text-align: left; opacity: 0; transform: translateY(12px); background: linear-gradient(transparent, rgb(27 22 19 / 52%)); pointer-events: none; }
 .couple-intro.is-ready .greeting-caption { animation: greeting-copy-in .7s cubic-bezier(.2,.7,.2,1) 2.25s both; }
 .greeting-caption span, .greeting-caption strong { display: block; text-shadow: 0 2px 12px rgb(25 19 16 / 35%); }
 .greeting-caption span { margin-bottom: 7px; font-family: Georgia, serif; font-size: 8px; letter-spacing: .22em; }
 .greeting-caption strong { font-family: Georgia, "Noto Serif KR", serif; font-size: 15px; font-weight: 400; letter-spacing: -.02em; }
 @keyframes greeting-copy-in { to { opacity: 1; transform: translateY(0); } }
-.hero-date { opacity: 0; animation: hero-copy-in .65s ease 2.5s both; }
-.hero h1 { margin: 12px 0 7px; opacity: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(28px, 8vw, 38px); font-weight: 400; letter-spacing: .08em; animation: hero-copy-in .65s ease 2.65s both; }
+.hero h1 { margin: 12px 0 7px; opacity: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(28px, 8vw, 38px); font-weight: 400; letter-spacing: .08em; animation: hero-copy-in .65s ease 2.5s both; }
 .hero h1 span { color: #a99b8a; font-size: .72em; }
+.hero-date { margin-bottom: 7px; opacity: 0; animation: hero-copy-in .65s ease 2.65s both; }
 .hero-place { margin: 0; color: var(--muted); opacity: 0; font-size: 13px; letter-spacing: .03em; animation: hero-copy-in .65s ease 2.8s both; }
 @keyframes hero-copy-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .scroll-cue { width: 1px; height: 38px; margin-top: 28px; overflow: hidden; opacity: 0; background: var(--line); animation: hero-copy-in .65s ease 2.95s both; }
