@@ -121,7 +121,7 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .timeline-arrow:disabled { opacity: .2; cursor: default; }
 .timeline-prev { left: 10px; }
 .timeline-next { right: 10px; }
-.timeline-progress { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); margin: 34px 30px 0; }
+.timeline-progress { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); margin: 34px 30px 0; }
 .timeline-progress::before { content: ""; position: absolute; top: 5px; right: 8%; left: 8%; height: 1px; background: #5a524d; }
 .timeline-progress button { position: relative; padding: 20px 0 0; color: #847b75; border: 0; background: none; font-family: Georgia, serif; font-size: 9px; cursor: pointer; transition: color .3s; }
 .timeline-progress button::before { content: ""; position: absolute; z-index: 1; top: 0; left: 50%; width: 11px; height: 11px; transform: translateX(-50%); border: 1px solid #746b65; border-radius: 50%; background: #302b28; transition: background .3s, border-color .3s, transform .3s; }

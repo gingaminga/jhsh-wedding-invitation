@@ -9,7 +9,8 @@ const GALLERY = Array.from({ length: 21 }, (_, index) =>
 
 const TIMELINE = [
   { year: "2018", label: "OUR BEGINNING", title: "우리의 시작", copy: "서로의 일상에 천천히 스며들며\n두 사람의 이야기가 시작되었습니다.", image: "/images/gallery-15.jpg" },
-  { year: "2021", label: "TOGETHER", title: "함께한 계절", copy: "기쁜 날도 평범한 날도 함께하며\n서로에게 가장 편안한 사람이 되었습니다.", image: "/images/gallery-06.jpg" },
+  { year: "2020", label: "SIDE BY SIDE", title: "익숙해진 우리", copy: "함께하는 날들이 자연스러워지며\n서로의 일상에 든든한 편이 되었습니다.", image: "/images/gallery-03.jpg" },
+  { year: "2022", label: "TOGETHER", title: "함께한 시간", copy: "기쁨도 걱정도 나란히 나누며\n서로에게 가장 편안한 사람이 되었습니다.", image: "/images/gallery-06.jpg" },
   { year: "2024", label: "ONE DIRECTION", title: "같은 곳을 바라보며", copy: "오랜 시간 쌓아온 믿음을 품고\n같은 방향으로 걸어가기로 했습니다.", image: "/images/gallery-10.jpg" },
   { year: "2026", label: "THE WEDDING", title: "평생을 약속합니다", copy: "여덟 해의 연인에서 평생의 가족으로,\n새로운 이야기를 시작합니다.", image: "/images/gallery-01.jpg" },
 ];
