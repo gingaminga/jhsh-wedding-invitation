@@ -484,6 +484,7 @@ export default function Home() {
   const [guestbookStatus, setGuestbookStatus] = useState("불러오는 중...");
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [surveyLayer, setSurveyLayer] = useState<"attendance" | "bus" | null>(null);
+  const [openAccount, setOpenAccount] = useState<string | null>(null);
 
   const dDay = useMemo(() => {
     const diff = WEDDING_AT.getTime() - Date.now();
@@ -598,9 +599,12 @@ export default function Home() {
     <div className="guestbook-list">
       {entries.map((entry) => (
         <article className="guestbook-entry" key={entry.id}>
-          <div>
-            <strong>{entry.name}</strong>
-            <time>{new Date(`${entry.createdAt}Z`).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}</time>
+          <div className="guestbook-entry-head">
+            <span className="guestbook-avatar" aria-hidden="true">{entry.name.slice(0, 1)}</span>
+            <div>
+              <strong>{entry.name}</strong>
+              <time>{new Date(entry.createdAt).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}</time>
+            </div>
           </div>
           <p>{entry.message}</p>
           <button type="button" onClick={() => setDeleteTarget(entry.id)} aria-label={`${entry.name}님의 방명록 삭제`}>삭제</button>
@@ -702,29 +706,36 @@ export default function Home() {
         <SectionHeading eyebrow="FOR YOUR HEART" index="07">마음 전하실 곳</SectionHeading>
         <p className="section-intro">참석이 어려우신 분들을 위해<br />마음 전하실 곳을 안내드립니다.</p>
         {ACCOUNTS.map((group) => (
-          <details className={`account-group ${group.tone}`} key={group.side}>
-            <summary>{group.side} 계좌번호 <span>⌄</span></summary>
-            <div className="account-list">
-              {group.people.map((person) => (
-                <div className="account-row" key={person.number}>
-                  <div><small>{person.relation}</small><strong>{person.name}</strong><p>{person.bank} {person.number}</p></div>
-                  <button type="button" onClick={() => copyAccount(person.number)}>복사</button>
-                </div>
-              ))}
+          <div className={`account-group ${group.tone} ${openAccount === group.side ? "is-open" : ""}`} key={group.side}>
+            <button className="account-summary" type="button" aria-expanded={openAccount === group.side} onClick={() => setOpenAccount((current) => current === group.side ? null : group.side)}>
+              <span><small>{group.tone === "groom" ? "GROOM'S SIDE" : "BRIDE'S SIDE"}</small>{group.side} 계좌번호</span>
+              <i className="account-toggle" aria-hidden="true"><b /><b /></i>
+            </button>
+            <div className="account-panel" aria-hidden={openAccount !== group.side} inert={openAccount !== group.side ? true : undefined}>
+              <div className="account-list">
+                {group.people.map((person) => (
+                  <div className="account-row" key={person.number}>
+                    <div><small>{person.relation}</small><strong>{person.name}</strong><p>{person.bank} {person.number}</p></div>
+                    <button type="button" onClick={() => copyAccount(person.number)}>복사</button>
+                  </div>
+                ))}
+              </div>
             </div>
-          </details>
+          </div>
         ))}
       </section>
 
       <section className="section guestbook-section reveal-section" data-reveal>
         <SectionHeading eyebrow="GUESTBOOK" index="08">축하의 마음을 남겨주세요</SectionHeading>
+        <p className="guestbook-intro">두 사람의 새로운 시작에<br />따뜻한 한마디를 더해 주세요.</p>
         <form className="guestbook-form" onSubmit={submitGuestbook}>
+          <div className="guestbook-form-heading"><span>WRITE A MESSAGE</span><p>남겨주신 마음을 오래도록 간직할게요.</p></div>
           <div className="input-row">
             <label>이름<input name="name" maxLength={20} required placeholder="이름" /></label>
             <label>비밀번호<input name="password" type="password" minLength={4} maxLength={30} required placeholder="숫자 4자리 이상" /></label>
           </div>
           <label>축하 메시지<textarea name="message" maxLength={300} required placeholder="따뜻한 축하의 마음을 남겨주세요." /></label>
-          <button className="primary-button" type="submit">메시지 남기기</button>
+          <button className="primary-button guestbook-submit" type="submit"><span>메시지 남기기</span><i aria-hidden="true">→</i></button>
         </form>
         {guestbookStatus && <p className="guestbook-status">{guestbookStatus}</p>}
         <GuestbookList entries={guestbook.slice(0, 4)} />
