@@ -292,12 +292,15 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
   .account-row button:hover { color: var(--sage); border-color: var(--sage); transform: translateY(-1px); }
   .primary-button:hover { filter: brightness(1.06); transform: translateY(-2px); }
 }
-.map-actions a:active, .account-row button:active, .primary-button:active, .outline-button:active, .kakao-share-button:active { transform: scale(.98); }
+.map-actions a:active, .account-row button:active, .primary-button:active, .outline-button:active, .kakao-share-button:active, .link-copy-button:active { transform: scale(.98); }
 
 .share-section { padding: 0 28px 72px; text-align: center; background: var(--paper); }
 .share-section p { margin: 0 0 14px; color: var(--muted); font-size: 11px; }
+.share-actions { display: grid; gap: 9px; }
 .kakao-share-button { width: 100%; padding: 15px; border: 0; border-radius: 3px; color: #2a211d; background: #fee500; font-size: 12px; font-weight: 600; cursor: pointer; }
 .kakao-share-button span { margin-right: 6px; color: #bd6d67; }
+.link-copy-button { width: 100%; padding: 14px; color: #5f5952; border: 1px solid var(--line); border-radius: 3px; background: transparent; font-size: 12px; cursor: pointer; transition: color .2s, border-color .2s, background .2s, transform .2s; }
+.link-copy-button.is-copied { color: #52685c; border-color: #9fb5a6; background: rgb(102 140 124 / 8%); }
 
 footer { padding: 65px 20px; color: #eee9e2; text-align: center; background: #343630; }
 footer p { margin: 0 0 8px; font-family: Georgia, serif; font-size: 13px; letter-spacing: .18em; }

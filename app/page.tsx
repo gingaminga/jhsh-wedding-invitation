@@ -135,6 +135,30 @@ function KakaoShareButton() {
   return <button type="button" className="kakao-share-button" onClick={share}><span aria-hidden="true">♥</span> 카카오톡으로 청첩장 공유하기</button>;
 }
 
+function LinkCopyButton() {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    const pageUrl = window.location.href;
+    try {
+      await navigator.clipboard.writeText(pageUrl);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = pageUrl;
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
+  };
+
+  return <button type="button" className={`link-copy-button ${copied ? "is-copied" : ""}`} onClick={copy}>{copied ? "링크를 복사했어요 ✓" : "청첩장 링크 복사하기"}</button>;
+}
+
 function IntroPhoto({ src, label, className, onReady }: { src: string; label: string; className: string; onReady: () => void }) {
   const [loaded, setLoaded] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -745,7 +769,7 @@ export default function Home() {
 
       <section className="share-section reveal-section" data-reveal aria-label="청첩장 공유">
         <p>소중한 분들께 청첩장을 전해보세요.</p>
-        <KakaoShareButton />
+        <div className="share-actions"><KakaoShareButton /><LinkCopyButton /></div>
       </section>
 
       <footer>
