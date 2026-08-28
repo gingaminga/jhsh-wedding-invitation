@@ -285,8 +285,8 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .input-row + label { margin-top: 12px; }
 .primary-button, .outline-button { width: 100%; padding: 15px; border: 1px solid var(--sage); cursor: pointer; font-size: 12px; }
 .primary-button { color: white; background: var(--sage); transition: transform .2s ease, filter .2s ease; }
-.guestbook-submit { display: flex; align-items: center; justify-content: space-between; padding-inline: 18px; border-color: #5c7f70; background: #5f8173; }
-.guestbook-submit i { font-family: Georgia, serif; font-size: 16px; font-style: normal; transition: transform .25s ease; }
+.guestbook-submit { display: flex; align-items: center; justify-content: space-between; padding-inline: 18px; border-color: #433d38; background: #4e4842; }
+.guestbook-submit i { color: #ddb5b8; font-family: Georgia, serif; font-size: 16px; font-style: normal; transition: color .25s ease, transform .25s ease; }
 .outline-button { margin-top: 17px; color: var(--sage); background: transparent; }
 .guestbook-status { margin: 24px 0 0; padding: 13px 16px; color: #817a72; border: 1px dashed #d8cfc4; background: rgb(255 255 255 / 35%); font-size: 11px; }
 .guestbook-list { margin-top: 28px; text-align: left; }
@@ -306,6 +306,7 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
   .account-group:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgb(58 48 41 / 9%); }
   .account-row button:hover { color: var(--sage); border-color: var(--sage); transform: translateY(-1px); }
   .primary-button:hover { filter: brightness(1.06); transform: translateY(-2px); }
+  .guestbook-submit:hover { background: #403a36; filter: none; }
   .guestbook-submit:hover i { transform: translateX(4px); }
 }
 .map-actions a:active, .account-row button:active, .primary-button:active, .outline-button:active, .kakao-share-button:active, .link-copy-button:active { transform: scale(.98); }
