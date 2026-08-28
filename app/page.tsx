@@ -389,8 +389,9 @@ function BusSurveyForm() {
 
   return (
     <div className="bus-survey">
+      <div className="bus-route-summary"><span>안성 출발</span><strong>오전 10시</strong><p>한경대학교 산학협력관 주차장 탑승</p></div>
       <div className="bus-survey-heading">
-        <div><span className="bus-survey-label">SHUTTLE SURVEY</span><h3>전세버스 탑승 수요조사</h3></div>
+        <p>응답 마감</p>
         <strong>DUE<br /><time dateTime="2026-10-23">10.23</time></strong>
       </div>
       <p className="bus-survey-copy">원활한 차량 준비를 위한 예상 인원 조사입니다.<br />신청이 좌석 확정을 의미하지는 않습니다.</p>
@@ -414,6 +415,79 @@ function BusSurveyForm() {
   );
 }
 
+function AttendanceSurveyForm() {
+  const [attendance, setAttendance] = useState("attending");
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState("");
+  const counts = Array.from({ length: 10 }, (_, index) => index + 1);
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitting(true);
+    setStatus("");
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    try {
+      const response = await fetch("/api/attendance-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          attendance,
+          name: data.get("name"),
+          phone: data.get("phone"),
+          mealPlan: attendance === "attending" ? data.get("mealPlan") : "not-applicable",
+          guestCount: attendance === "attending" ? data.get("guestCount") : 0,
+        }),
+      });
+      const result = (await response.json()) as { error?: string };
+      if (!response.ok) throw new Error(result.error);
+      setStatus("참석 응답이 저장되었습니다. 같은 연락처로 다시 제출하면 응답이 수정됩니다.");
+    } catch (error) {
+      setStatus(error instanceof Error && error.message ? error.message : "응답을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="attendance-survey">
+      <p className="bus-survey-copy">예식 준비를 위해 참석 여부를 알려주세요.<br />같은 연락처로 다시 제출하면 응답이 수정됩니다.</p>
+      <form className="bus-survey-form" onSubmit={submit}>
+        <fieldset className="survey-choice-group">
+          <legend>참석 여부</legend>
+          <div>
+            <label><input type="radio" name="attendance" value="attending" checked={attendance === "attending"} onChange={() => setAttendance("attending")} /><span>참석할게요</span></label>
+            <label><input type="radio" name="attendance" value="not-attending" checked={attendance === "not-attending"} onChange={() => setAttendance("not-attending")} /><span>참석이 어려워요</span></label>
+          </div>
+        </fieldset>
+        <div className="input-row">
+          <label>성함<input name="name" maxLength={20} required placeholder="이름" autoComplete="name" /></label>
+          <label>전화번호<input name="phone" type="tel" inputMode="tel" required placeholder="010-0000-0000" autoComplete="tel" /></label>
+        </div>
+        {attendance === "attending" && (
+          <div className="input-row survey-attending-fields">
+            <label>식사 예정
+              <select name="mealPlan" defaultValue="yes" aria-label="식사 예정 여부">
+                <option value="yes">식사 예정</option>
+                <option value="no">식사 안 함</option>
+                <option value="undecided">아직 미정</option>
+              </select>
+            </label>
+            <label>참석 인원
+              <select name="guestCount" defaultValue="1" aria-label="결혼식 참석 인원">
+                {counts.map((count) => <option value={count} key={count}>{count}명</option>)}
+              </select>
+            </label>
+          </div>
+        )}
+        <label className="survey-consent"><input type="checkbox" required /> <span>예식 안내를 위한 성함·전화번호 수집에 동의합니다.</span></label>
+        <button className="primary-button" type="submit" disabled={submitting}>{submitting ? "저장 중..." : "참석 여부 제출하기"}</button>
+      </form>
+      {status && <p className={`bus-survey-status ${status.includes("저장되었습니다") ? "is-success" : ""}`} role="status">{status}</p>}
+    </div>
+  );
+}
+
 export default function Home() {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
@@ -421,6 +495,7 @@ export default function Home() {
   const [guestbook, setGuestbook] = useState<GuestbookEntry[]>([]);
   const [guestbookStatus, setGuestbookStatus] = useState("불러오는 중...");
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
+  const [surveyLayer, setSurveyLayer] = useState<"attendance" | "bus" | null>(null);
 
   const dDay = useMemo(() => {
     const diff = WEDDING_AT.getTime() - Date.now();
@@ -461,12 +536,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (lightbox === null && !showAllGuestbook && deleteTarget === null) return;
+    if (lightbox === null && !showAllGuestbook && deleteTarget === null && surveyLayer === null) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setLightbox(null);
         setShowAllGuestbook(false);
         setDeleteTarget(null);
+        setSurveyLayer(null);
       }
       if (lightbox !== null && event.key === "ArrowRight") setLightbox((lightbox + 1) % GALLERY.length);
       if (lightbox !== null && event.key === "ArrowLeft") setLightbox((lightbox - 1 + GALLERY.length) % GALLERY.length);
@@ -477,7 +553,7 @@ export default function Home() {
       document.body.classList.remove("modal-open");
       window.removeEventListener("keydown", onKey);
     };
-  }, [lightbox, showAllGuestbook, deleteTarget]);
+  }, [lightbox, showAllGuestbook, deleteTarget, surveyLayer]);
 
   const moveGallery = (direction: number) => {
     galleryRef.current?.scrollBy({ left: direction * galleryRef.current.clientWidth * 0.82, behavior: "smooth" });
@@ -621,13 +697,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section shuttle-section reveal-section" data-reveal>
-        <SectionHeading eyebrow="SHUTTLE BUS" index="06">안성 전세버스 안내</SectionHeading>
-        <div className="transport-card">
-          <span className="transport-icon" aria-hidden="true">BUS</span>
-          <div><small>안성 출발 전세버스</small><strong>오전 10시 출발</strong><p>한경대학교 산학협력관 주차장 탑승</p></div>
+      <section className="section response-section reveal-section" data-reveal>
+        <SectionHeading eyebrow="RSVP & SHUTTLE" index="06">참석 여부를 알려주세요</SectionHeading>
+        <p className="response-intro">예식과 전세버스 준비를 위해<br />간단한 응답을 부탁드립니다.</p>
+        <div className="response-actions">
+          <button type="button" onClick={() => setSurveyLayer("attendance")}>
+            <span>WEDDING RSVP</span><strong>결혼식 참석 여부</strong><small>참석 · 식사 · 인원 입력</small><i>응답하기 →</i>
+          </button>
+          <button type="button" onClick={() => setSurveyLayer("bus")}>
+            <span>ANSEONG SHUTTLE</span><strong>안성 전세버스</strong><small>오전 10시 · 한경대학교 산학협력관 주차장</small><i>수요조사 →</i>
+          </button>
         </div>
-        <BusSurveyForm />
       </section>
 
       <section className="section account-section reveal-section" data-reveal>
@@ -672,6 +752,19 @@ export default function Home() {
         <p>JIHWAHN <span>&amp;</span> SEOHEE</p>
         <small>2026. 10. 25</small>
       </footer>
+
+      {surveyLayer !== null && (
+        <div className="modal survey-layer" role="dialog" aria-modal="true" aria-labelledby="survey-layer-title">
+          <button className="survey-layer-backdrop" type="button" onClick={() => setSurveyLayer(null)} aria-label="수요조사 닫기" />
+          <div className="survey-sheet">
+            <div className="survey-sheet-header">
+              <div><span>{surveyLayer === "attendance" ? "WEDDING RSVP" : "ANSEONG SHUTTLE"}</span><h2 id="survey-layer-title">{surveyLayer === "attendance" ? "결혼식 참석 수요조사" : "전세버스 탑승 수요조사"}</h2></div>
+              <button type="button" onClick={() => setSurveyLayer(null)} aria-label="닫기">×</button>
+            </div>
+            <div className="survey-sheet-body">{surveyLayer === "attendance" ? <AttendanceSurveyForm /> : <BusSurveyForm />}</div>
+          </div>
+        </div>
+      )}
 
       {lightbox !== null && (
         <div className="modal lightbox" role="dialog" aria-modal="true" aria-label="사진 크게 보기" onClick={() => setLightbox(null)}>
