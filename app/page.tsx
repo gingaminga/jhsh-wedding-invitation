@@ -3,16 +3,16 @@
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const WEDDING_AT = new Date("2026-10-25T12:10:00+09:00");
-const GALLERY = Array.from({ length: 21 }, (_, index) =>
-  `/images/gallery-${String(index + 1).padStart(2, "0")}.jpg`,
+const GALLERY = Array.from({ length: 17 }, (_, index) =>
+  `/images/section-04-gallery-${String(index + 1).padStart(2, "0")}.jpg`,
 );
 
 const TIMELINE = [
-  { year: "2018", label: "OUR BEGINNING", title: "우리의 시작", copy: "서로의 일상에 천천히 스며들며\n두 사람의 이야기가 시작되었습니다.", image: "/images/gallery-15.jpg" },
-  { year: "2020", label: "SIDE BY SIDE", title: "익숙해진 우리", copy: "함께하는 날들이 자연스러워지며\n서로의 일상에 든든한 편이 되었습니다.", image: "/images/gallery-03.jpg" },
-  { year: "2022", label: "TOGETHER", title: "함께한 시간", copy: "기쁨도 걱정도 나란히 나누며\n서로에게 가장 편안한 사람이 되었습니다.", image: "/images/gallery-06.jpg" },
-  { year: "2024", label: "ONE DIRECTION", title: "같은 곳을 바라보며", copy: "오랜 시간 쌓아온 믿음을 품고\n같은 방향으로 걸어가기로 했습니다.", image: "/images/gallery-10.jpg" },
-  { year: "2026", label: "THE WEDDING", title: "평생을 약속합니다", copy: "여덟 해의 연인에서 평생의 가족으로,\n새로운 이야기를 시작합니다.", image: "/images/gallery-01.jpg" },
+  { year: "2018", label: "OUR BEGINNING", title: "우리의 시작", copy: "서로의 일상에 천천히 스며들며\n두 사람의 이야기가 시작되었습니다.", image: "/images/section-02-2018.jpg" },
+  { year: "2020", label: "SIDE BY SIDE", title: "익숙해진 우리", copy: "함께하는 날들이 자연스러워지며\n서로의 일상에 든든한 편이 되었습니다.", image: "/images/section-02-2020.jpg" },
+  { year: "2022", label: "TOGETHER", title: "함께한 시간", copy: "기쁨도 걱정도 나란히 나누며\n서로에게 가장 편안한 사람이 되었습니다.", image: "/images/section-02-2022.jpg" },
+  { year: "2024", label: "ONE DIRECTION", title: "같은 곳을 바라보며", copy: "오랜 시간 쌓아온 믿음을 품고\n같은 방향으로 걸어가기로 했습니다.", image: "/images/section-02-2024.jpg" },
+  { year: "2026", label: "THE WEDDING", title: "평생을 약속합니다", copy: "여덟 해의 연인에서 평생의 가족으로,\n새로운 이야기를 시작합니다.", image: "/images/section-02-2026.jpg" },
 ];
 
 const ACCOUNTS = [
@@ -449,7 +449,7 @@ function AttendanceSurveyForm() {
 
   return (
     <div className="attendance-survey">
-      <p className="bus-survey-copy">예식 준비를 위해 참석 여부와 인원을 알려주세요.</p>
+      <p className="bus-survey-copy">원활한 예식 준비를 위해 예상 참석 인원을 파악하고 있습니다.</p>
       <form className="bus-survey-form" onSubmit={submit}>
         <fieldset className="survey-choice-group">
           <legend>참석 여부</legend>
@@ -694,7 +694,7 @@ export default function Home() {
         <p className="response-intro">예식과 전세버스 준비를 위해<br />간단한 응답을 부탁드립니다.</p>
         <div className="response-actions">
           <button type="button" onClick={() => setSurveyLayer("attendance")}>
-            <span>WEDDING RSVP</span><strong>결혼식 참석 여부</strong><small>참석 · 인원 입력</small><i>응답하기 →</i>
+            <span>WEDDING RSVP</span><strong>결혼식 참석 여부</strong><small>예상 참석 인원 파악을 위한 간단한 조사예요</small><i>응답하기 →</i>
           </button>
           <button type="button" onClick={() => setSurveyLayer("bus")}>
             <span>ANSEONG SHUTTLE</span><strong>안성 전세버스</strong><small>오전 10시 · 한경대학교 산학협력관 주차장</small><i>수요조사 →</i>
