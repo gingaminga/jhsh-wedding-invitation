@@ -323,6 +323,7 @@ footer { padding: 65px 20px; color: #eee9e2; text-align: center; background: #34
 footer p { margin: 0 0 8px; font-family: Georgia, serif; font-size: 13px; letter-spacing: .18em; }
 footer p span { color: #a8af9f; }
 footer small { color: #989a94; font-size: 9px; letter-spacing: .2em; }
+.footer-credit { display: block; margin-top: 27px; color: #777a74; font-family: Georgia, "Noto Serif KR", serif; font-size: 9px; letter-spacing: .12em; }
 
 .modal { position: fixed; z-index: 100; inset: 0; }
 .survey-layer { display: flex; justify-content: center; background: rgb(22 20 18 / 72%); backdrop-filter: blur(6px); }

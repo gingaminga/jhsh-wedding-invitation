@@ -750,6 +750,7 @@ export default function Home() {
       <footer>
         <p>JIHWAHN <span>&amp;</span> SEOHUI</p>
         <small>2026. 10. 25</small>
+        <span className="footer-credit">Made by 최지환</span>
       </footer>
 
       {surveyLayer !== null && (
