@@ -131,7 +131,6 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 
 .date-section { overflow: hidden; background: var(--paper); }
 .date-section .section-heading { margin-bottom: 22px; text-align: left; }
-.date-section .section-heading::after { display: none; }
 .date-section .section-heading span, .gallery-section .section-heading span, .location-section .section-heading span { margin-left: 0; }
 .date-summary { margin: 0 0 32px; padding-left: 2px; color: var(--muted); text-align: left; font-size: 13px; }
 .calendar { padding: 24px 4px 18px; border-block: 1px solid var(--line); background: transparent; }
