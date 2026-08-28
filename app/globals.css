@@ -318,8 +318,8 @@ footer small { color: #989a94; font-size: 9px; letter-spacing: .2em; }
 .survey-sheet-body .bus-survey { margin-top: 0; }
 @keyframes survey-sheet-in { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
 .modal-close { position: absolute; z-index: 2; top: max(20px, env(safe-area-inset-top)); right: 20px; width: 42px; height: 42px; color: white; border: 0; background: none; font-size: 32px; cursor: pointer; }
-.lightbox { display: grid; place-items: center; background: rgb(18 17 15 / 95%); }
-.lightbox img { max-width: min(94vw, 800px); max-height: 86vh; object-fit: contain; }
+.lightbox { display: grid; place-items: center; background: rgb(18 17 15 / 95%); overscroll-behavior: none; touch-action: none; }
+.lightbox img { max-width: min(94vw, 800px); max-height: 86vh; object-fit: contain; touch-action: none; user-select: none; -webkit-touch-callout: none; -webkit-user-drag: none; }
 .lightbox > span { position: absolute; bottom: max(22px, env(safe-area-inset-bottom)); color: #d1cec9; font-family: Georgia, serif; font-size: 11px; letter-spacing: .1em; }
 .lightbox-nav { position: absolute; z-index: 2; top: 50%; width: 44px; height: 60px; transform: translateY(-50%); color: white; border: 0; background: rgb(0 0 0 / 15%); font-family: Georgia, serif; font-size: 36px; cursor: pointer; }
 .lightbox-prev { left: 4px; }

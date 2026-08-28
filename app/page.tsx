@@ -787,7 +787,7 @@ export default function Home() {
         <div className="modal lightbox" role="dialog" aria-modal="true" aria-label="사진 크게 보기" onClick={() => setLightbox(null)}>
           <button className="modal-close" type="button" onClick={() => setLightbox(null)} aria-label="닫기">×</button>
           <button className="lightbox-nav lightbox-prev" type="button" onClick={(e) => { e.stopPropagation(); setLightbox((lightbox - 1 + GALLERY.length) % GALLERY.length); }} aria-label="이전 사진">‹</button>
-          <img src={GALLERY[lightbox]} alt={`지환과 서희의 사진 ${lightbox + 1}`} onClick={(e) => e.stopPropagation()} />
+          <img src={GALLERY[lightbox]} alt={`지환과 서희의 사진 ${lightbox + 1}`} draggable={false} onClick={(e) => e.stopPropagation()} />
           <span>{lightbox + 1} / {GALLERY.length}</span>
           <button className="lightbox-nav lightbox-next" type="button" onClick={(e) => { e.stopPropagation(); setLightbox((lightbox + 1) % GALLERY.length); }} aria-label="다음 사진">›</button>
         </div>
