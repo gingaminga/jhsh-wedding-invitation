@@ -709,7 +709,7 @@ export default function Home() {
           <div className={`account-group ${group.tone} ${openAccount === group.side ? "is-open" : ""}`} key={group.side}>
             <button className="account-summary" type="button" aria-expanded={openAccount === group.side} onClick={() => setOpenAccount((current) => current === group.side ? null : group.side)}>
               <span><small>{group.tone === "groom" ? "GROOM'S SIDE" : "BRIDE'S SIDE"}</small>{group.side} 계좌번호</span>
-              <i className="account-toggle" aria-hidden="true"><b /><b /></i>
+              <i className="account-arrow" aria-hidden="true">⌄</i>
             </button>
             <div className="account-panel" aria-hidden={openAccount !== group.side} inert={openAccount !== group.side ? true : undefined}>
               <div className="account-list">
