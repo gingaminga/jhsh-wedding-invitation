@@ -32,7 +32,6 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "2026년 10월 25일 일요일 오후 12시 10분 · 수원 마이어스",
       images: [imageUrl],
     },
-    icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   };
 }
 
@@ -42,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

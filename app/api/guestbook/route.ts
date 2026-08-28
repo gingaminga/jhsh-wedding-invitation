@@ -1,6 +1,9 @@
-import { GuestbookRow, hashPassword, supabaseRest } from "../../../db/supabase";
+import { GuestbookRow, hasSupabaseConfig, hashPassword, supabaseRest } from "../../../db/supabase";
 
 export async function GET() {
+  if (!hasSupabaseConfig()) {
+    return Response.json({ entries: [], unavailable: true });
+  }
   try {
     const results = await supabaseRest<GuestbookRow[]>("guestbook_entries?select=id,name,message,created_at&order=created_at.desc,id.desc&limit=100");
     return Response.json({

@@ -497,10 +497,10 @@ export default function Home() {
   const loadGuestbook = async () => {
     try {
       const response = await fetch("/api/guestbook");
-      const data = (await response.json()) as { entries?: GuestbookEntry[]; error?: string };
+      const data = (await response.json()) as { entries?: GuestbookEntry[]; error?: string; unavailable?: boolean };
       if (!response.ok) throw new Error(data.error);
       setGuestbook(data.entries ?? []);
-      setGuestbookStatus(data.entries?.length ? "" : "첫 축하 메시지를 남겨주세요.");
+      setGuestbookStatus(data.unavailable ? "로컬 방명록은 Supabase 환경 설정 후 표시됩니다." : data.entries?.length ? "" : "첫 축하 메시지를 남겨주세요.");
     } catch {
       setGuestbookStatus("방명록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");
     }
