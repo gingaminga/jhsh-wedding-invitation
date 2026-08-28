@@ -130,16 +130,10 @@ body.greeting-locked { overflow: hidden; overscroll-behavior: none; touch-action
 .timeline-hint { margin: 25px 0 0; color: #736b65; text-align: center; font-family: Georgia, serif; font-size: 8px; letter-spacing: .2em; }
 
 .date-section { overflow: hidden; background: var(--paper); }
-.date-section .section-heading { text-align: left; }
+.date-section .section-heading { margin-bottom: 22px; text-align: left; }
+.date-section .section-heading::after { display: none; }
 .date-section .section-heading span, .gallery-section .section-heading span, .location-section .section-heading span { margin-left: 0; }
-.date-monument { display: grid; grid-template-columns: auto 1fr auto; align-items: end; margin: -10px -2px 38px; text-align: left; }
-.date-monument > span { align-self: center; color: var(--lilac); font-family: Georgia, serif; font-size: 11px; letter-spacing: .28em; writing-mode: vertical-rl; transform: rotate(180deg); }
-.date-monument > strong { margin-left: 10px; color: var(--ink); font-family: Georgia, "Times New Roman", serif; font-size: clamp(116px, 35vw, 160px); font-weight: 400; line-height: .74; letter-spacing: -.09em; }
-.date-monument > div { display: grid; gap: 8px; padding: 0 0 3px 16px; border-left: 1px solid var(--blush); }
-.date-monument b, .date-monument i { font-family: Georgia, serif; font-style: normal; font-weight: 400; }
-.date-monument b { color: var(--lilac); font-size: 17px; }
-.date-monument i { color: var(--muted); font-size: 9px; letter-spacing: .15em; }
-.date-summary { margin: 0 0 46px; padding-left: 2px; color: var(--muted); text-align: left; font-size: 13px; }
+.date-summary { margin: 0 0 32px; padding-left: 2px; color: var(--muted); text-align: left; font-size: 13px; }
 .calendar { padding: 24px 4px 18px; border-block: 1px solid var(--line); background: transparent; }
 .calendar-title { display: flex; align-items: center; gap: 13px; margin-bottom: 22px; text-align: left; }
 .calendar-title > span { color: var(--lilac); font-family: Georgia, serif; font-size: 42px; line-height: .8; letter-spacing: -.06em; }

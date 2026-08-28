@@ -573,11 +573,6 @@ export default function Home() {
 
       <section className="section date-section reveal-section" data-reveal>
         <SectionHeading eyebrow="THE WEDDING DAY" index="03">우리의 결혼식</SectionHeading>
-        <div className="date-monument" aria-label="2026년 10월 25일 일요일">
-          <span>OCT</span>
-          <strong>25</strong>
-          <div><b>2026</b><i>SUNDAY</i></div>
-        </div>
         <p className="date-summary">일요일 오후 12시 10분 · 수원 마이어스</p>
         <div className="calendar" aria-label="2026년 10월 달력">
           <div className="calendar-title"><span>10</span><div><strong>OCTOBER</strong><small>2026</small></div></div>
