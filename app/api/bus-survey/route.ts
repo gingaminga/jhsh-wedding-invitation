@@ -1,6 +1,4 @@
-import { ensureBusSurveySchema, getBusSurveyDb } from "../../../db/bus-survey";
-
-const DEADLINE = new Date("2026-10-23T23:59:59+09:00");
+import { supabaseRest } from "../../../db/supabase";
 
 function parseCount(value: unknown) {
   const count = Number(value);
@@ -9,10 +7,6 @@ function parseCount(value: unknown) {
 
 export async function POST(request: Request) {
   try {
-    if (Date.now() > DEADLINE.getTime()) {
-      return Response.json({ error: "전세버스 수요조사가 마감되었습니다. 신랑·신부에게 개별 연락 부탁드립니다." }, { status: 410 });
-    }
-
     const payload = (await request.json()) as Record<string, unknown>;
     const name = typeof payload.name === "string" ? payload.name.trim() : "";
     const phone = typeof payload.phone === "string" ? payload.phone.replace(/\D/g, "") : "";
@@ -26,17 +20,11 @@ export async function POST(request: Request) {
       return Response.json({ error: "탑승 인원과 전달 사항을 확인해 주세요." }, { status: 400 });
     }
 
-    await ensureBusSurveySchema();
-    await getBusSurveyDb()
-      .prepare(`INSERT INTO bus_survey_responses (name, phone, outbound_count, note)
-        VALUES (?, ?, ?, ?)
-        ON CONFLICT(phone) DO UPDATE SET
-          name = excluded.name,
-          outbound_count = excluded.outbound_count,
-          note = excluded.note,
-          updated_at = CURRENT_TIMESTAMP`)
-      .bind(name, phone, passengerCount, note)
-      .run();
+    await supabaseRest("bus_survey_responses?on_conflict=phone", {
+      method: "POST",
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify({ name, phone, outbound_count: passengerCount, note, updated_at: new Date().toISOString() }),
+    });
 
     return Response.json({ ok: true, updated: true });
   } catch {

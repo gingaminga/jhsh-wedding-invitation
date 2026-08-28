@@ -1,14 +1,8 @@
-import { ensureGuestbookSchema, getGuestbookDb, GuestbookRow, hashPassword } from "../../../db/guestbook";
+import { GuestbookRow, hashPassword, supabaseRest } from "../../../db/supabase";
 
 export async function GET() {
   try {
-    await ensureGuestbookSchema();
-    const { results } = await getGuestbookDb()
-      .prepare(`SELECT id, name, message, created_at
-        FROM guestbook_entries
-        ORDER BY created_at DESC, id DESC
-        LIMIT 100`)
-      .all<GuestbookRow>();
+    const results = await supabaseRest<GuestbookRow[]>("guestbook_entries?select=id,name,message,created_at&order=created_at.desc,id.desc&limit=100");
     return Response.json({
       entries: results.map((row) => ({
         id: row.id,
@@ -34,12 +28,12 @@ export async function POST(request: Request) {
     if (name.length > 20 || message.length > 300 || password.length > 30) {
       return Response.json({ error: "입력 가능한 글자 수를 확인해 주세요." }, { status: 400 });
     }
-    await ensureGuestbookSchema();
     const passwordHash = await hashPassword(password);
-    await getGuestbookDb()
-      .prepare("INSERT INTO guestbook_entries (name, message, password_hash) VALUES (?, ?, ?)")
-      .bind(name, message, passwordHash)
-      .run();
+    await supabaseRest("guestbook_entries", {
+      method: "POST",
+      headers: { Prefer: "return=minimal" },
+      body: JSON.stringify({ name, message, password_hash: passwordHash }),
+    });
     return Response.json({ ok: true }, { status: 201 });
   } catch {
     return Response.json({ error: "메시지를 남기지 못했습니다. 잠시 후 다시 시도해 주세요." }, { status: 500 });

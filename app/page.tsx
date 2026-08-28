@@ -3,7 +3,6 @@
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const WEDDING_AT = new Date("2026-10-25T12:10:00+09:00");
-const BUS_SURVEY_DEADLINE = new Date("2026-10-23T23:59:59+09:00");
 const GALLERY = Array.from({ length: 21 }, (_, index) =>
   `/images/gallery-${String(index + 1).padStart(2, "0")}.jpg`,
 );
@@ -363,7 +362,6 @@ function KakaoMap() {
 function BusSurveyForm() {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState("");
-  const closed = Date.now() > BUS_SURVEY_DEADLINE.getTime();
   const counts = Array.from({ length: 11 }, (_, index) => index);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
@@ -393,24 +391,9 @@ function BusSurveyForm() {
     }
   };
 
-  if (closed) {
-    return (
-      <div className="bus-survey bus-survey-closed">
-        <span className="bus-survey-label">SHUTTLE SURVEY</span>
-        <h3>전세버스 수요조사 마감</h3>
-        <p>추가 탑승 또는 신청 변경이 필요하신 경우<br />신랑·신부에게 개별 연락 부탁드립니다.</p>
-        <button type="button" onClick={() => window.alert("전세버스 수요조사가 마감되었습니다. 추가 탑승 또는 신청 변경은 신랑·신부에게 개별 연락 부탁드립니다.")}>마감 안내 확인</button>
-      </div>
-    );
-  }
-
   return (
     <div className="bus-survey">
       <div className="bus-route-summary"><span>안성 출발</span><strong>오전 10시</strong><p>한경대학교 산학협력관 주차장 탑승</p></div>
-      <div className="bus-survey-heading">
-        <p>응답 마감</p>
-        <strong>DUE<br /><time dateTime="2026-10-23">10.23</time></strong>
-      </div>
       <p className="bus-survey-copy">원활한 차량 준비를 위한 예상 인원 조사입니다.<br />신청이 좌석 확정을 의미하지는 않습니다.</p>
       <form className="bus-survey-form" onSubmit={submit}>
         <div className="input-row">
@@ -451,14 +434,12 @@ function AttendanceSurveyForm() {
         body: JSON.stringify({
           attendance,
           name: data.get("name"),
-          phone: data.get("phone"),
-          mealPlan: attendance === "attending" ? data.get("mealPlan") : "not-applicable",
           guestCount: attendance === "attending" ? data.get("guestCount") : 0,
         }),
       });
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error);
-      setStatus("참석 응답이 저장되었습니다. 같은 연락처로 다시 제출하면 응답이 수정됩니다.");
+      setStatus("참석 응답이 저장되었습니다.");
     } catch (error) {
       setStatus(error instanceof Error && error.message ? error.message : "응답을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     } finally {
@@ -468,7 +449,7 @@ function AttendanceSurveyForm() {
 
   return (
     <div className="attendance-survey">
-      <p className="bus-survey-copy">예식 준비를 위해 참석 여부를 알려주세요.<br />같은 연락처로 다시 제출하면 응답이 수정됩니다.</p>
+      <p className="bus-survey-copy">예식 준비를 위해 참석 여부와 인원을 알려주세요.</p>
       <form className="bus-survey-form" onSubmit={submit}>
         <fieldset className="survey-choice-group">
           <legend>참석 여부</legend>
@@ -477,19 +458,9 @@ function AttendanceSurveyForm() {
             <label><input type="radio" name="attendance" value="not-attending" checked={attendance === "not-attending"} onChange={() => setAttendance("not-attending")} /><span>참석이 어려워요</span></label>
           </div>
         </fieldset>
-        <div className="input-row">
-          <label>성함<input name="name" maxLength={20} required placeholder="이름" autoComplete="name" /></label>
-          <label>전화번호<input name="phone" type="tel" inputMode="tel" required placeholder="010-0000-0000" autoComplete="tel" /></label>
-        </div>
+        <label>성함<input name="name" maxLength={20} required placeholder="이름" autoComplete="name" /></label>
         {attendance === "attending" && (
-          <div className="input-row survey-attending-fields">
-            <label>식사 예정
-              <select name="mealPlan" defaultValue="yes" aria-label="식사 예정 여부">
-                <option value="yes">식사 예정</option>
-                <option value="no">식사 안 함</option>
-                <option value="undecided">아직 미정</option>
-              </select>
-            </label>
+          <div className="survey-attending-fields">
             <label>참석 인원
               <select name="guestCount" defaultValue="1" aria-label="결혼식 참석 인원">
                 {counts.map((count) => <option value={count} key={count}>{count}명</option>)}
@@ -497,7 +468,7 @@ function AttendanceSurveyForm() {
             </label>
           </div>
         )}
-        <label className="survey-consent"><input type="checkbox" required /> <span>예식 안내를 위한 성함·전화번호 수집에 동의합니다.</span></label>
+        <label className="survey-consent"><input type="checkbox" required /> <span>참석 인원 확인을 위한 성함 수집에 동의합니다.</span></label>
         <button className="primary-button" type="submit" disabled={submitting}>{submitting ? "저장 중..." : "참석 여부 제출하기"}</button>
       </form>
       {status && <p className={`bus-survey-status ${status.includes("저장되었습니다") ? "is-success" : ""}`} role="status">{status}</p>}
@@ -705,7 +676,7 @@ export default function Home() {
         <SectionHeading eyebrow="LOCATION" index="05">오시는 길</SectionHeading>
         <div className="venue-copy">
           <h3>수원 마이어스</h3>
-          <p>경기 수원시 권선구 경수대로 270<br />터미널동 2층</p>
+          <p><strong>그레이스홀</strong><br />경기 수원시 권선구 경수대로 270<br />터미널동 2층</p>
         </div>
         <KakaoMap />
         <div className="map-actions">
@@ -719,7 +690,7 @@ export default function Home() {
         <p className="response-intro">예식과 전세버스 준비를 위해<br />간단한 응답을 부탁드립니다.</p>
         <div className="response-actions">
           <button type="button" onClick={() => setSurveyLayer("attendance")}>
-            <span>WEDDING RSVP</span><strong>결혼식 참석 여부</strong><small>참석 · 식사 · 인원 입력</small><i>응답하기 →</i>
+            <span>WEDDING RSVP</span><strong>결혼식 참석 여부</strong><small>참석 · 인원 입력</small><i>응답하기 →</i>
           </button>
           <button type="button" onClick={() => setSurveyLayer("bus")}>
             <span>ANSEONG SHUTTLE</span><strong>안성 전세버스</strong><small>오전 10시 · 한경대학교 산학협력관 주차장</small><i>수요조사 →</i>
