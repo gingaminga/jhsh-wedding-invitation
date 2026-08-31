@@ -436,6 +436,7 @@ function AttendanceSurveyForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          side: data.get("side"),
           attendance,
           name: data.get("name"),
           guestCount: attendance === "attending" ? data.get("guestCount") : 0,
@@ -462,6 +463,13 @@ function AttendanceSurveyForm() {
             <label><input type="radio" name="attendance" value="not-attending" checked={attendance === "not-attending"} onChange={() => setAttendance("not-attending")} /><span>참석이 어려워요</span></label>
           </div>
         </fieldset>
+        <fieldset className="survey-choice-group">
+          <legend>하객 구분</legend>
+          <div>
+            <label><input type="radio" name="side" value="groom" required /><span>신랑측</span></label>
+            <label><input type="radio" name="side" value="bride" required /><span>신부측</span></label>
+          </div>
+        </fieldset>
         <label>성함<input name="name" maxLength={20} required placeholder="이름" autoComplete="name" /></label>
         {attendance === "attending" && (
           <div className="survey-attending-fields">
@@ -472,7 +480,7 @@ function AttendanceSurveyForm() {
             </label>
           </div>
         )}
-        <label className="survey-consent"><input type="checkbox" required /> <span>참석 인원 확인을 위한 성함 수집에 동의합니다.</span></label>
+        <label className="survey-consent"><input type="checkbox" required /> <span>참석 인원 확인을 위한 성함·하객 구분 수집에 동의합니다.</span></label>
         <button className="primary-button" type="submit" disabled={submitting}>{submitting ? "저장 중..." : "참석 여부 제출하기"}</button>
       </form>
       {status && <p className={`bus-survey-status ${status.includes("저장되었습니다") ? "is-success" : ""}`} role="status">{status}</p>}
@@ -698,7 +706,7 @@ export default function Home() {
         <p className="response-intro">예식과 전세버스 준비를 위해<br />간단한 응답을 부탁드립니다.</p>
         <div className="response-actions">
           <button type="button" onClick={() => setSurveyLayer("attendance")}>
-            <span>WEDDING RSVP</span><strong>결혼식 참석 여부</strong><small>예상 참석 인원 파악을 위한 간단한 조사예요</small><i>응답하기 →</i>
+            <span>WEDDING RSVP</span><strong>결혼식 참석 여부</strong><small>신랑측·신부측별 예상 참석 인원을 파악해요</small><i>응답하기 →</i>
           </button>
           <button type="button" onClick={() => setSurveyLayer("bus")}>
             <span>ANSEONG SHUTTLE</span><strong>안성 전세버스</strong><small>오전 10시 · 한경대학교 산학협력관 주차장</small><i>수요조사 →</i>
