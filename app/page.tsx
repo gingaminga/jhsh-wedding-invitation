@@ -363,7 +363,7 @@ function KakaoMap() {
   );
 }
 
-function BusSurveyForm() {
+function BusSurveyForm({ onSuccess }: { onSuccess: () => void }) {
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState("");
   const counts = Array.from({ length: 11 }, (_, index) => index);
@@ -388,6 +388,8 @@ function BusSurveyForm() {
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error);
       setStatus("수요조사 응답이 저장되었습니다. 같은 연락처로 다시 제출하면 응답이 수정됩니다.");
+      await new Promise((resolve) => window.setTimeout(resolve, 600));
+      onSuccess();
     } catch (error) {
       setStatus(error instanceof Error && error.message ? error.message : "응답을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     } finally {
@@ -419,7 +421,7 @@ function BusSurveyForm() {
   );
 }
 
-function AttendanceSurveyForm() {
+function AttendanceSurveyForm({ onSuccess }: { onSuccess: () => void }) {
   const [attendance, setAttendance] = useState("attending");
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState("");
@@ -445,6 +447,8 @@ function AttendanceSurveyForm() {
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error);
       setStatus("참석 응답이 저장되었습니다.");
+      await new Promise((resolve) => window.setTimeout(resolve, 600));
+      onSuccess();
     } catch (error) {
       setStatus(error instanceof Error && error.message ? error.message : "응답을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.");
     } finally {
@@ -773,7 +777,13 @@ export default function Home() {
               <div><span>{surveyLayer === "attendance" ? "WEDDING RSVP" : "ANSEONG SHUTTLE"}</span><h2 id="survey-layer-title">{surveyLayer === "attendance" ? "결혼식 참석 수요조사" : "전세버스 탑승 수요조사"}</h2></div>
               <button type="button" onClick={() => setSurveyLayer(null)} aria-label="닫기">×</button>
             </div>
-            <div className="survey-sheet-body">{surveyLayer === "attendance" ? <AttendanceSurveyForm /> : <BusSurveyForm />}</div>
+            <div className="survey-sheet-body">
+              {surveyLayer === "attendance" ? (
+                <AttendanceSurveyForm onSuccess={() => setSurveyLayer(null)} />
+              ) : (
+                <BusSurveyForm onSuccess={() => setSurveyLayer(null)} />
+              )}
+            </div>
           </div>
         </div>
       )}
