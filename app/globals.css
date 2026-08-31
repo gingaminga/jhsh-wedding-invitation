@@ -358,6 +358,12 @@ footer small { color: #989a94; font-size: 9px; letter-spacing: .2em; }
 
 @media (hover: none) { .gallery-arrow { display: none; } }
 @media (hover: none) { .timeline-arrow { display: none; } }
+/* iOS Safari automatically zooms focused form controls rendered below 16px. */
+@supports (-webkit-touch-callout: none) {
+  @media (hover: none) and (pointer: coarse) {
+    input, textarea, select { font-size: 16px !important; }
+  }
+}
 @media (min-width: 700px) { .gallery-item { flex-basis: 76%; } .gallery-item:nth-child(even) { flex-basis: 56%; } .survey-layer { align-items: center; padding: 28px; } .survey-sheet { height: min(820px, calc(100svh - 56px)); border-radius: 18px; box-shadow: 0 28px 80px rgb(0 0 0 / 30%); } .survey-sheet-body { height: calc(min(820px, 100svh - 56px) - 92px); } }
 @media (max-height: 700px) { .hero { padding-block: 20px; } .greeting-stage { margin-block: 14px 18px; } .couple-intro { height: 68svh; min-height: 430px; } .scroll-cue { display: none; } }
 @media (max-width: 380px) { .section { padding-inline: 22px; } .gallery-section { padding-inline: 0; } .timeline-heading-wrap { grid-template-columns: 1fr; padding-inline: 22px; } .timeline-heading-wrap > p { text-align: left; } .timeline-card { flex-basis: calc(100% - 44px); height: 540px; } .map-wrap { margin-inline: -22px; } .gallery-item { height: 480px; } .gallery-item:nth-child(even) { height: 380px; } .input-row { grid-template-columns: 1fr; } }
