@@ -9,9 +9,13 @@ const GALLERY = Array.from({ length: 17 }, (_, index) =>
 
 const TIMELINE = [
   { year: "2018", label: "OUR BEGINNING", title: "우리의 시작", copy: "서로의 일상에 천천히 스며들며\n두 사람의 이야기가 시작되었습니다.", image: "/images/section-02-2018.jpg" },
-  { year: "2020", label: "SIDE BY SIDE", title: "익숙해진 우리", copy: "함께하는 날들이 자연스러워지며\n서로의 일상에 든든한 편이 되었습니다.", image: "/images/section-02-2020.jpg" },
+  { year: "2019", label: "ONE YEAR", title: "함께 맞은 첫해", copy: "서로의 하루를 나누는 일이\n조금씩 자연스러워졌습니다.", image: "/images/section-02-2019.jpg" },
+  { year: "2020", label: "SIDE BY SIDE", title: "익숙해진 우리", copy: "함께하는 날들이 쌓이며\n서로의 든든한 편이 되었습니다.", image: "/images/section-02-2020.jpg" },
+  { year: "2021", label: "LITTLE JOYS", title: "소소한 행복", copy: "평범한 날의 작은 기쁨도\n함께라서 더 특별했습니다.", image: "/images/section-02-2021.jpg" },
   { year: "2022", label: "TOGETHER", title: "함께한 시간", copy: "기쁨도 걱정도 나란히 나누며\n서로에게 가장 편안한 사람이 되었습니다.", image: "/images/section-02-2022.jpg" },
-  { year: "2024", label: "ONE DIRECTION", title: "같은 곳을 바라보며", copy: "오랜 시간 쌓아온 믿음을 품고\n같은 방향으로 걸어가기로 했습니다.", image: "/images/section-02-2024.jpg" },
+  { year: "2023", label: "EVERYDAY US", title: "우리다운 일상", copy: "수많은 계절을 함께 지나며\n우리만의 추억을 채워갔습니다.", image: "/images/section-02-2023.jpg" },
+  { year: "2024", label: "ONE DIRECTION", title: "같은 곳을 바라보며", copy: "오랜 시간 쌓아온 믿음을 품고\n같은 방향으로 걷기 시작했습니다.", image: "/images/section-02-2024.jpg" },
+  { year: "2025", label: "CLOSER TO FOREVER", title: "약속에 가까이", copy: "여덟 해의 인연을 품고\n평생의 연을 준비했습니다.", image: "/images/section-02-2025.jpg" },
   { year: "2026", label: "THE WEDDING", title: "평생을 약속합니다", copy: "여덟 해의 연인에서 평생의 가족으로,\n새로운 이야기를 시작합니다.", image: "/images/section-02-2026.jpg" },
 ];
 
