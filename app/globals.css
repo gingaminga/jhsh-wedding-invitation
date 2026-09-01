@@ -16,7 +16,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: #ebe7e1; color: var(--ink); font-family: var(--font-geist-sans), "Apple SD Gothic Neo", sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: #ebe7e1; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; -webkit-font-smoothing: antialiased; }
 button, input, textarea { font: inherit; }
 button, summary, a { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }
