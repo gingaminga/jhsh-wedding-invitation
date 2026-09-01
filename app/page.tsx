@@ -272,7 +272,7 @@ function RelationshipTimeline() {
     <section className="timeline-section reveal-section" data-reveal aria-label="지환과 서희의 8년 타임라인">
       <div className="timeline-heading-wrap">
         <SectionHeading eyebrow="OUR STORY · EIGHT YEARS" index="02">우리의 시간</SectionHeading>
-        <p>손끝으로 넘겨보는<br />지환과 서희의 여덟 해</p>
+        <p>손끝으로 넘겨보는<br />우리의 여덟 해</p>
       </div>
       <div className="timeline-frame">
         <div
