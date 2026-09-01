@@ -124,23 +124,25 @@ function KakaoShareButton() {
     );
   };
 
-  const fallbackShare = async (pageUrl: string, popupBlocked = false) => {
-    if (!popupBlocked && navigator.share) {
-      try {
-        await navigator.share({ title: "최지환 ♥ 윤서희, 결혼합니다", text: "2026년 10월 25일 · 수원 마이어스", url: pageUrl });
-        return;
-      } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") return;
-      }
-    }
-    await copyShareLink(pageUrl, popupBlocked);
-  };
-
   const share = () => {
     const pageUrl = window.location.href;
     if (sdkReady && window.Kakao) {
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const popup = isMobile
+        ? null
+        : window.open(
+            "about:blank",
+            "sharer",
+            "width=480,height=700,scrollbars=yes,resizable=1",
+          );
+
+      if (!isMobile && !popup) {
+        void copyShareLink(pageUrl, true);
+        return;
+      }
+
       try {
-        const result = window.Kakao.Share.sendDefault({
+        window.Kakao.Share.sendDefault({
           objectType: "feed",
           content: {
             title: "최지환 ♥ 윤서희, 결혼합니다",
@@ -152,15 +154,13 @@ function KakaoShareButton() {
             { title: "청첩장 보기", link: { mobileWebUrl: pageUrl, webUrl: pageUrl } },
           ],
         });
-        if (result && typeof (result as PromiseLike<unknown>).then === "function") {
-          void Promise.resolve(result).catch(() => fallbackShare(pageUrl, true));
-        }
       } catch {
-        void fallbackShare(pageUrl, true);
+        popup?.close();
+        void copyShareLink(pageUrl, true);
       }
       return;
     }
-    void fallbackShare(pageUrl);
+    void copyShareLink(pageUrl);
   };
 
   return <button type="button" className="kakao-share-button" onClick={share}><span aria-hidden="true">♥</span> 카카오톡으로 청첩장 공유하기</button>;
