@@ -265,6 +265,67 @@ function GreetingIntro() {
   );
 }
 
+function BackgroundMusic() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const removeFallbackListeners = () => {
+      window.removeEventListener("pointerdown", playOnFirstInteraction);
+      window.removeEventListener("keydown", playOnFirstInteraction);
+    };
+    const tryPlay = () => {
+      void audio.play().then(removeFallbackListeners).catch(() => {
+        window.addEventListener("pointerdown", playOnFirstInteraction, { once: true });
+        window.addEventListener("keydown", playOnFirstInteraction, { once: true });
+      });
+    };
+    function playOnFirstInteraction() {
+      tryPlay();
+    }
+
+    tryPlay();
+    return removeFallbackListeners;
+  }, []);
+
+  const toggleMusic = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      void audio.play();
+    } else {
+      audio.pause();
+    }
+  };
+
+  return (
+    <div className="bgm-player">
+      <audio
+        ref={audioRef}
+        src="/audio/gentle-holiday-drift.mp3"
+        autoPlay
+        loop
+        preload="auto"
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      />
+      <button
+        type="button"
+        className={isPlaying ? "is-playing" : ""}
+        onClick={toggleMusic}
+        aria-label={isPlaying ? "배경 음악 끄기" : "배경 음악 재생"}
+        aria-pressed={isPlaying}
+      >
+        <span className="bgm-bars" aria-hidden="true"><i /><i /><i /></span>
+        <small>BGM</small>
+      </button>
+    </div>
+  );
+}
+
 function SectionHeading({ eyebrow, index, children }: { eyebrow: string; index: string; children: React.ReactNode }) {
   return (
     <header className="section-heading" data-index={index}>
@@ -659,6 +720,7 @@ export default function Home() {
 
   return (
     <main className="invitation-shell">
+      <BackgroundMusic />
       <section className="hero" aria-labelledby="hero-title">
         <p className="eyebrow">WE ARE GETTING MARRIED</p>
         <GreetingIntro />
