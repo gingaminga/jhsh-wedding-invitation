@@ -16,7 +16,7 @@ const TIMELINE = [
   { year: "2023", label: "EVERYDAY US", title: "우리다운 일상", copy: "수많은 계절을 함께 지나며\n우리만의 추억을 채워갔습니다.", image: "/images/section-02-2023.jpg" },
   { year: "2024", label: "ONE DIRECTION", title: "같은 곳을 바라보며", copy: "오랜 시간 쌓아온 믿음을 품고\n같은 방향으로 걷기 시작했습니다.", image: "/images/section-02-2024.jpg" },
   { year: "2025", label: "CLOSER TO FOREVER", title: "약속에 가까이", copy: "여덟 해의 인연을 품고\n평생의 연을 준비했습니다.", image: "/images/section-02-2025.jpg" },
-  { year: "2026", label: "THE WEDDING", title: "평생을 약속합니다", copy: "여덟 해의 연인에서 평생의 가족으로,\n새로운 이야기를 시작합니다.", image: "/images/section-04-gallery-17.jpg" },
+  { year: "2026", label: "THE WEDDING", title: "평생을 약속합니다", copy: "여덟 해의 연인에서 평생의 가족으로,\n새로운 이야기를 시작합니다.", image: "/images/section-02-2026.jpg" },
 ];
 
 const ACCOUNTS = [
