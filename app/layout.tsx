@@ -1,20 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-function getSiteUrl() {
-  const configuredUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.VERCEL_PROJECT_PRODUCTION_URL ??
-    process.env.VERCEL_URL;
-
-  if (!configuredUrl) return new URL("http://localhost:3000");
-  return new URL(configuredUrl.startsWith("http") ? configuredUrl : `https://${configuredUrl}`);
-}
+const siteUrl = new URL("https://jhsh-wedding-invitation.vercel.app");
 
 export const metadata: Metadata = {
-  metadataBase: getSiteUrl(),
+  metadataBase: siteUrl,
   title: "지환 & 서희, 결혼합니다",
   description: "2026년 10월 25일, 수원 마이어스에서 저희 두 사람의 시작을 함께해 주세요.",
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -22,9 +17,12 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "지환 & 서희의 모바일 청첩장",
     title: "지환 & 서희, 결혼합니다",
     description: "2026년 10월 25일 일요일 오후 12시 10분 · 수원 마이어스",
-    images: [{ url: "/og.png", width: 1733, height: 909, alt: "지환과 서희의 결혼식 초대" }],
+    images: [{ url: "/og.png", width: 1731, height: 909, alt: "지환과 서희의 결혼식 초대" }],
   },
   twitter: {
     card: "summary_large_image",
