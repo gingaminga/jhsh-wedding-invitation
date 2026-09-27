@@ -1,4 +1,5 @@
 import { GuestbookRow, hasSupabaseConfig, hashPassword, supabaseRest } from "../../../db/supabase";
+import { notifyDiscordSafely } from "../../../db/discord";
 
 export async function GET() {
   if (!hasSupabaseConfig()) {
@@ -37,6 +38,7 @@ export async function POST(request: Request) {
       headers: { Prefer: "return=minimal" },
       body: JSON.stringify({ name, message, password_hash: passwordHash }),
     });
+    await notifyDiscordSafely({ kind: "guestbook", name, message });
     return Response.json({ ok: true }, { status: 201 });
   } catch {
     return Response.json({ error: "메시지를 남기지 못했습니다. 잠시 후 다시 시도해 주세요." }, { status: 500 });

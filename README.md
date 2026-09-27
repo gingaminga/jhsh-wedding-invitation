@@ -13,6 +13,7 @@
 - 안성 출발 전세버스 안내 및 탑승 수요조사
 - 계좌번호 접기/펼치기 및 복사
 - Supabase에 저장되는 방명록, 참석 여부와 전세버스 수요조사
+- Supabase 저장 직후 지정한 Discord 스레드로 전송되는 응답 알림
 - 카카오톡 등 링크 공유용 대표 이미지
 
 ## 실행
@@ -37,6 +38,10 @@ pnpm dev
 - `SUPABASE_URL`: Supabase 프로젝트 URL
 - `SUPABASE_SECRET_KEY`: API 라우트에서만 사용하는 Supabase 서버 시크릿 키
 - `NEXT_PUBLIC_SITE_URL`: 대표 이미지에 사용할 실제 배포 주소(예: `https://example.com`)
+- `DISCORD_WEBHOOK_URL`: 알림을 받을 스레드의 부모 채널에 연결된 Discord 웹훅 URL
+- `DISCORD_THREAD_ID`: 알림을 받을 Discord 스레드 ID
+
+Discord 알림은 참석 응답, 전세버스 수요조사, 방명록 등록에 적용됩니다. 연락처는 가운데 자리를 가려 전송하고 방명록 비밀번호 해시는 전송하지 않습니다. Discord 설정이 없거나 일시적으로 전송에 실패해도 Supabase에 정상 저장된 하객 응답은 성공으로 처리됩니다.
 
 카카오 개발자 콘솔의 웹 플랫폼에는 로컬 주소와 Vercel 배포 주소를 허용 도메인으로 등록해야 지도가 표시됩니다.
 

@@ -1,4 +1,5 @@
 import { supabaseRest } from "../../../db/supabase";
+import { notifyDiscordSafely } from "../../../db/discord";
 
 function parseCount(value: unknown) {
   const count = Number(value);
@@ -25,6 +26,8 @@ export async function POST(request: Request) {
       headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
       body: JSON.stringify({ name, phone, outbound_count: passengerCount, note, updated_at: new Date().toISOString() }),
     });
+
+    await notifyDiscordSafely({ kind: "bus", name, phone, passengerCount, note });
 
     return Response.json({ ok: true, updated: true });
   } catch {

@@ -1,4 +1,5 @@
 import { supabaseRest } from "../../../db/supabase";
+import { notifyDiscordSafely } from "../../../db/discord";
 
 const ATTENDANCE_OPTIONS = new Set(["attending", "not-attending"]);
 const SIDE_OPTIONS = new Set(["groom", "bride"]);
@@ -35,6 +36,14 @@ export async function POST(request: Request) {
         name,
         guest_count: guestCount,
       }),
+    });
+
+    await notifyDiscordSafely({
+      kind: "attendance",
+      side: side as "groom" | "bride",
+      attendance: attendance as "attending" | "not-attending",
+      name,
+      guestCount,
     });
 
     return Response.json({ ok: true });
